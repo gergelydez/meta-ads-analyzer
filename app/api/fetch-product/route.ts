@@ -8,11 +8,11 @@ export async function POST(req: NextRequest) {
     const { url } = await req.json()
     if (!url) return NextResponse.json({ error: 'URL missing' }, { status: 400 })
 
-    // Use web_search tool server-side — no CORS issues here
     const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1500,
-      tools: [{ type: 'web_search_20250305' as const, name: 'web_search' }],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      tools: [{ type: 'web_search_20250305', name: 'web_search' } as any],
       messages: [{
         role: 'user',
         content: `Caută și analizează această pagină de produs eCommerce: ${url}
@@ -32,14 +32,9 @@ Extrage informațiile și returnează STRICT JSON valid (fără backticks, făr�
       }]
     })
 
-    // Extract text from all content blocks (may include tool_use blocks)
     const textBlocks = response.content.filter(b => b.type === 'text')
     const raw = textBlocks.map(b => (b as { type: 'text'; text: string }).text).join('')
-
-    const clean = raw.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, (m) =>
-      m.replace(/```json|```/g, '')
-    ).trim()
-
+    const clean = raw.replace(/```json|```/g, '').trim()
     const start = clean.indexOf('{')
     const end = clean.lastIndexOf('}')
     if (start === -1 || end === -1) throw new Error('No JSON found')
