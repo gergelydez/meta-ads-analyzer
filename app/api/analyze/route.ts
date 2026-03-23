@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-export const maxDuration = 120 // 2 min timeout for Vercel
+export const maxDuration = 60 // max on hobby plan
 
 export async function POST(req: NextRequest) {
   try {
@@ -192,7 +192,7 @@ Returnează STRICT JSON cu această structură exactă:
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 6000,
+      max_tokens: 4000,
       messages: [{ role: 'user', content: parts }]
     })
 
@@ -216,3 +216,4 @@ Returnează STRICT JSON cu această structură exactă:
     return NextResponse.json({ error: 'Analysis failed', detail: String(err) }, { status: 500 })
   }
 }
+
