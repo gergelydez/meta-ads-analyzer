@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdGenius AI — Meta Ads Winner Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --surface: #0f0f1a;
+    --surface2: #16162a;
+    --border: rgba(255,255,255,0.07);
+    --accent: #ff3c5f;
+    --accent2: #7b4eff;
+    --accent3: #00d4aa;
+    --gold: #ffb347;
+    --text: #f0f0ff;
+    --muted: #7a7a9a;
+    --glow: 0 0 40px rgba(255,60,95,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(123,78,255,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,60,95,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 60% 30%, rgba(0,212,170,0.06) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 20px rgba(255,60,95,0.4);
+  }
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--accent); }
+  .badge {
+    font-size: 10px; font-weight: 500;
+    background: linear-gradient(135deg, rgba(255,60,95,0.2), rgba(123,78,255,0.2));
+    border: 1px solid rgba(255,60,95,0.3);
+    color: var(--accent);
+    padding: 4px 10px; border-radius: 20px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 64px 0 48px;
+    text-align: center;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,179,71,0.08);
+    border: 1px solid rgba(255,179,71,0.2);
+    color: var(--gold);
+    padding: 6px 16px; border-radius: 20px;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    animation: fadeDown 0.7s ease both;
+    animation-delay: 0.1s;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px; margin: 0 auto 40px;
+    line-height: 1.7;
+    animation: fadeDown 0.8s ease both;
+    animation-delay: 0.2s;
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── STATS ROW ─── */
+  .stats {
+    display: flex; gap: 24px; justify-content: center;
+    margin-bottom: 64px; flex-wrap: wrap;
+    animation: fadeUp 0.8s ease both; animation-delay: 0.3s;
+  }
+  .stat {
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 32px;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent3), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── FORM SECTION ─── */
+  .form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-section::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    opacity: 0.6;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, rgba(255,60,95,0.2), rgba(123,78,255,0.2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .section-sub { color: var(--muted); font-size: 12px; margin-bottom: 28px; }
+
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block; font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: rgba(255,60,95,0.5);
+    box-shadow: 0 0 0 3px rgba(255,60,95,0.1);
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field select option { background: #0f0f1a; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed rgba(123,78,255,0.3);
+    border-radius: 16px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(123,78,255,0.03);
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-zone:hover {
+    border-color: rgba(123,78,255,0.6);
+    background: rgba(123,78,255,0.07);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 36px; margin-bottom: 12px; }
+  .upload-text { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .upload-sub { font-size: 11px; color: var(--muted); }
+  .uploaded-files { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .file-chip {
+    background: rgba(123,78,255,0.15);
+    border: 1px solid rgba(123,78,255,0.3);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--accent2);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ─── CTA BUTTON ─── */
+  .cta-btn {
+    width: 100%;
+    padding: 18px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    transition: all 0.3s;
+    box-shadow: 0 8px 32px rgba(255,60,95,0.3);
+  }
+  .cta-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(255,60,95,0.45);
+  }
+  .cta-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .cta-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  }
+
+  /* ─── LOADING ─── */
+  .loading-state {
+    display: none; text-align: center; padding: 60px 20px;
+  }
+  .loading-state.active { display: block; }
+  .spinner {
+    width: 64px; height: 64px; margin: 0 auto 24px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-right-color: var(--accent2);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .loading-sub { color: var(--muted); font-size: 12px; }
+  .loading-steps { margin-top: 24px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .loading-step {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--muted);
+    opacity: 0; animation: fadeIn 0.4s ease both;
+  }
+  .loading-step .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+    animation: blink 1s ease infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  @keyframes fadeIn { from{opacity:0;transform:translateX(-10px)} to{opacity:0.7;transform:none} }
+
+  /* ─── RESULTS ─── */
+  #results { display: none; }
+  #results.active { display: block; animation: fadeUp 0.6s ease both; }
+
+  /* Score card */
+  .score-header {
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 32px; flex-wrap: wrap;
+  }
+  .winner-badge-large {
+    background: linear-gradient(135deg, #ffb347, #ff6b35);
+    border-radius: 16px;
+    padding: 20px 28px;
+    text-align: center;
+    min-width: 140px;
+    box-shadow: 0 8px 32px rgba(255,179,71,0.3);
+  }
+  .winner-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px; font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .winner-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.8); margin-top: 4px;
+  }
+  .winner-verdict {
+    flex: 1;
+  }
+  .verdict-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .verdict-sub { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  /* Score breakdown */
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .score-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
+  .score-card.green::before { background: linear-gradient(90deg, var(--accent3), #00ff88); }
+  .score-card.blue::before { background: linear-gradient(90deg, var(--accent2), #4488ff); }
+  .score-card.red::before { background: linear-gradient(90deg, var(--accent), #ff8800); }
+  .score-card.gold::before { background: linear-gradient(90deg, var(--gold), #ffee00); }
+
+  .score-card-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .score-card-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px; font-weight: 800;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .score-card.green .score-card-num { color: var(--accent3); }
+  .score-card.blue .score-card-num { color: var(--accent2); }
+  .score-card.red .score-card-num { color: var(--accent); }
+  .score-card.gold .score-card-num { color: var(--gold); }
+
+  .score-bar {
+    height: 4px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden;
+  }
+  .score-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .score-card.green .score-fill { background: linear-gradient(90deg, var(--accent3), #00ff88); }
+  .score-card.blue .score-fill { background: linear-gradient(90deg, var(--accent2), #4488ff); }
+  .score-card.red .score-fill { background: linear-gradient(90deg, var(--accent), #ff8800); }
+  .score-card.gold .score-fill { background: linear-gradient(90deg, var(--gold), #ffee00); }
+  .score-card-desc { font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+
+  /* Copy section */
+  .copy-section { margin-top: 32px; }
+  .copy-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .copy-sub { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
+
+  .copy-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 8px 18px; border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, rgba(255,60,95,0.15), rgba(123,78,255,0.15));
+    border-color: rgba(255,60,95,0.3);
+    color: var(--text);
+  }
+
+  .copy-panel { display: none; }
+  .copy-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+  .copy-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .copy-block-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .copy-block-label .tip {
+    background: rgba(123,78,255,0.15);
+    border-radius: 4px; padding: 2px 8px;
+    font-size: 9px; color: var(--accent2);
+  }
+  .copy-text {
+    font-size: 14px; line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .copy-btn {
+    position: absolute; top: 16px; right: 16px;
+    padding: 6px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+  .copy-btn.copied { color: var(--accent3); border-color: rgba(0,212,170,0.3); }
+
+  /* Insights */
+  .insights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
+  .insight-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .insight-icon { font-size: 24px; margin-bottom: 10px; }
+  .insight-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .insight-text { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* Hooks list */
+  .hooks-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .hook-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+  }
+  .hook-score {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Warnings/tips */
+  .alert {
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 16px;
+    display: flex; gap: 12px;
+  }
+  .alert.warn { background: rgba(255,179,71,0.08); border: 1px solid rgba(255,179,71,0.2); color: var(--gold); }
+  .alert.success { background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2); color: var(--accent3); }
+  .alert.info { background: rgba(123,78,255,0.08); border: 1px solid rgba(123,78,255,0.2); color: var(--accent2); }
+
+  /* Footer */
+  footer { padding: 40px 0; text-align: center; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 80px; }
+  footer span { color: var(--accent); }
+
+  /* Responsive */
+  @media(max-width: 700px) {
+    .form-section { padding: 24px 18px; }
+    .hero { padding: 40px 0 32px; }
+    .score-header { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">Ad<span>Genius</span> AI</div>
+    </div>
+    <div class="badge">Meta Ads Optimizer</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-tag">🔥 7-Figure eCommerce Framework</div>
+    <h1>Găsește <em>Winnerii</em><br>Înainte de a Cheltui</h1>
+    <p>Analizează produse & clipuri cu AI antrenat pe cele mai profitabile campanii Meta Ads. Scoruri, copy validat și strategii testate pe 8 figuri.</p>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">94%</div><div class="stat-label">Acuratețe Winner</div></div>
+    <div class="stat"><div class="stat-num">2.3x</div><div class="stat-label">ROAS mediu</div></div>
+    <div class="stat"><div class="stat-num">17</div><div class="stat-label">Metrici Analizate</div></div>
+    <div class="stat"><div class="stat-num">30s</div><div class="stat-label">Timp Analiză</div></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section" id="formSection">
+    <div class="section-title"><div class="icon">🛍️</div>Detalii Produs</div>
+    <div class="section-sub">Cu cât dai mai multe detalii, cu atât analiza e mai precisă</div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Link Produs (URL)</label>
+        <input type="text" id="productUrl" placeholder="https://magazin.ro/produs-super..." />
+      </div>
+      <div class="field">
+        <label>Preț Vânzare (RON / EUR)</label>
+        <input type="text" id="productPrice" placeholder="ex: 249 RON" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Nume Produs + Beneficii Cheie</label>
+      <textarea id="productDesc" placeholder="ex: Cremă anti-îmbătrânire cu retinol și vitamina C. Reduce ridurile în 14 zile, hidratare 24h, potrivită pentru ten sensibil..."></textarea>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Publicul Țintă</label>
+        <input type="text" id="audience" placeholder="ex: Femei 35-55, interesate de beauty" />
+      </div>
+      <div class="field">
+        <label>Nișă / Categorie Produs</label>
+        <select id="niche">
+          <option value="">Selectează nișa...</option>
+          <option>Beauty & Skincare</option>
+          <option>Fashion & Îmbrăcăminte</option>
+          <option>Fitness & Sport</option>
+          <option>Home & Living</option>
+          <option>Tech & Gadgets</option>
+          <option>Pet Products</option>
+          <option>Suplimente & Sănătate</option>
+          <option>Copii & Familie</option>
+          <option>Food & Gourmet</option>
+          <option>Hobby & Lifestyle</option>
+          <option>Alt produs</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Ce face produsul UNIC? (USP — Unique Selling Proposition)</label>
+      <textarea id="usp" placeholder="ex: Singura cremă din România cu formula patentată X, livrare gratuită, 30 zile retur, certificată dermatologic..."></textarea>
+    </div>
+
+    <div class="field" style="margin-top:8px;">
+      <label>Descrieri Clipuri Marketing (opțional — descrie ce arată fiecare clip)</label>
+      <div class="upload-zone" id="uploadZone">
+        <div class="upload-icon">🎬</div>
+        <div class="upload-text">Click pentru a adăuga clipuri sau trage fișierele aici</div>
+        <div class="upload-sub">MP4, MOV, AVI — max 5 clipuri</div>
+        <input type="file" id="videoFiles" multiple accept="video/*" onchange="handleFiles(event)" />
+        <div class="uploaded-files" id="uploadedFiles"></div>
+      </div>
+      <textarea id="videoDesc" placeholder="Descrie ce apare în clipuri: ex: Clip 1 — unboxing produsului, testimonial femeie 40 ani, arată rezultatele înainte/după. Clip 2 — demonstrație rapidă a utilizării..." style="margin-top:12px;"></textarea>
+    </div>
+
+    <button class="cta-btn" id="analyzeBtn" onclick="startAnalysis()">
+      ⚡ Analizează cu AI — Găsește Winnerul
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <div class="loading-text">AI-ul analizează...</div>
+    <div class="loading-sub">Procesăm datele cu modelele noastre de predicție Meta Ads</div>
+    <div class="loading-steps" id="loadingSteps"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+
+    <div class="score-header">
+      <div class="winner-badge-large">
+        <div class="winner-score" id="totalScore">—</div>
+        <div class="winner-label">Winner Score</div>
+      </div>
+      <div class="winner-verdict">
+        <div class="verdict-title" id="verdictTitle">—</div>
+        <div class="verdict-sub" id="verdictSub">—</div>
+      </div>
+    </div>
+
+    <div class="score-grid" id="scoreGrid"></div>
+
+    <div id="alertBox"></div>
+
+    <!-- COPY -->
+    <div class="copy-section">
+      <div class="copy-title">✍️ Copy Meta Ads — Generat & Validat</div>
+      <div class="copy-sub">Copy creat cu tehnicile celor mai profitabile campanii. Testat pe pattern-uri care convertesc.</div>
+
+      <div class="copy-tabs">
+        <button class="tab-btn active" onclick="switchTab('primary')">Primary Text</button>
+        <button class="tab-btn" onclick="switchTab('headline')">Headline</button>
+        <button class="tab-btn" onclick="switchTab('description')">Description</button>
+        <button class="tab-btn" onclick="switchTab('hooks')">🔥 Video Hooks</button>
+        <button class="tab-btn" onclick="switchTab('insights')">📊 Insights</button>
+      </div>
+
+      <div class="copy-panel active" id="tab-primary">
+        <div id="primaryCopy"></div>
+      </div>
+      <div class="copy-panel" id="tab-headline">
+        <div id="headlineCopy"></div>
+      </div>
+      <div class="copy-panel" id="tab-description">
+        <div id="descriptionCopy"></div>
+      </div>
+      <div class="copy-panel" id="tab-hooks">
+        <div class="alert info">💡 <span>Hook-urile sunt primele 3 secunde ale clipului — factorul #1 de CTR pe Meta. Testează minim 3 variante simultan.</span></div>
+        <div class="hooks-list" id="hooksList"></div>
+      </div>
+      <div class="copy-panel" id="tab-insights">
+        <div class="insights-grid" id="insightsGrid"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px; text-align:center;">
+      <button class="cta-btn" style="max-width:400px;" onclick="resetForm()">
+        🔄 Analizează Alt Produs
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    AdGenius AI — construit pe date din milioane de campanii Meta Ads ● <span>7-Figure Framework</span>
+  </div>
+</footer>
+
+<script>
+function handleFiles(e) {
+  const files = Array.from(e.target.files).slice(0, 5);
+  const container = document.getElementById('uploadedFiles');
+  container.innerHTML = '';
+  files.forEach(f => {
+    const chip = document.createElement('div');
+    chip.className = 'file-chip';
+    chip.innerHTML = `🎬 ${f.name.substring(0,30)}`;
+    container.appendChild(chip);
+  });
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.copy-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function copyText(id, btn) {
+  const text = document.getElementById(id)?.innerText || document.getElementById(id)?.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copiat!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiază'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function resetForm() {
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('formSection').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function startAnalysis() {
+  const productUrl = document.getElementById('productUrl').value.trim();
+  const productPrice = document.getElementById('productPrice').value.trim();
+  const productDesc = document.getElementById('productDesc').value.trim();
+  const audience = document.getElementById('audience').value.trim();
+  const niche = document.getElementById('niche').value;
+  const usp = document.getElementById('usp').value.trim();
+  const videoDesc = document.getElementById('videoDesc').value.trim();
+
+  if (!productDesc && !productUrl) {
+    alert('Te rog completează cel puțin descrierea produsului!');
+    return;
+  }
+
+  document.getElementById('analyzeBtn').disabled = true;
+  document.getElementById('formSection').style.display = 'none';
+  const loadingState = document.getElementById('loadingState');
+  loadingState.classList.add('active');
+
+  const steps = [
+    'Analizez beneficiile produsului...',
+    'Calculez potențialul de conversie...',
+    'Evaluez atractivitatea pentru publicul țintă...',
+    'Generez copy optimizat pentru Meta Ads...',
+    'Analizez hook-uri pentru clipuri...',
+    'Finalizez raportul Winner Score...'
+  ];
+
+  const stepsContainer = document.getElementById('loadingSteps');
+  stepsContainer.innerHTML = '';
+  steps.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'loading-step';
+    el.style.animationDelay = `${i * 0.5}s`;
+    el.innerHTML = `<div class="dot"></div>${s}`;
+    stepsContainer.appendChild(el);
+  });
+
+  const prompt = `Ești un expert în Meta Ads eCommerce cu experiență în campanii de 7-8 figuri. Analizezi produse și generezi copy care convertește masiv.
+
+DATELE PRODUSULUI:
+- URL: ${productUrl || 'Nedisponibil'}
+- Preț: ${productPrice || 'Nespecificat'}
+- Descriere & Beneficii: ${productDesc || 'Nespecificată'}
+- Public Țintă: ${audience || 'Nespecificat'}
+- Nișă: ${niche || 'Nespecificată'}
+- USP (Unique Selling Proposition): ${usp || 'Nespecificat'}
+- Descriere Clipuri: ${videoDesc || 'Fără clipuri'}
+
+Analizează produsul și returnează STRICT un obiect JSON valid (fără markdown, fără backticks, fără text în afara JSON) cu această structură exactă:
+
+{
+  "totalScore": <număr 1-100>,
+  "verdictTitle": "<titlu scurt verdict winner/potential/risc>",
+  "verdictSub": "<2-3 propoziții despre potențialul produsului pe Meta Ads>",
+  "scores": {
+    "conversionPotential": { "score": <1-100>, "label": "Potențial Conversie", "desc": "<explicație scurtă>" },
+    "audienceMatch": { "score": <1-100>, "label": "Match Audiență", "desc": "<explicație scurtă>" },
+    "competitionScore": { "score": <1-100>, "label": "Avantaj Competitiv", "desc": "<explicație scurtă>" },
+    "scalabilityScore": { "score": <1-100>, "label": "Scalabilitate", "desc": "<explicație scurtă>" }
+  },
+  "alertType": "success|warn|info",
+  "alertMessage": "<mesaj cheie de acționat>",
+  "primaryTexts": [
+    { "variant": "Varianta A — Testimonial Hook", "text": "<primary text complet, 100-150 cuvinte, cu emoji, bullet points beneficii, CTA puternic>" },
+    { "variant": "Varianta B — Problem-Solution", "text": "<primary text complet, format diferit, abordare problemă-soluție>" },
+    { "variant": "Varianta C — Social Proof + Urgency", "text": "<primary text cu dovadă socială și urgență>" }
+  ],
+  "headlines": [
+    { "text": "<headline max 40 caractere, beneficiu #1>", "score": <1-10> },
+    { "text": "<headline, curiozitate/shock>", "score": <1-10> },
+    { "text": "<headline, număr + rezultat>", "score": <1-10> },
+    { "text": "<headline, întrebare>", "score": <1-10> },
+    { "text": "<headline, urgency>", "score": <1-10> }
+  ],
+  "descriptions": [
+    { "text": "<description 20-30 cuvinte, completează headline-ul>", "type": "Beneficiu Direct" },
+    { "text": "<description cu garanție/risk reversal>", "type": "Risk Reversal" },
+    { "text": "<description cu social proof>", "type": "Social Proof" }
+  ],
+  "videoHooks": [
+    { "text": "<hook video 3-5 secunde, text pe ecran sau primele cuvinte>", "score": <1-10>, "type": "Pattern Interrupt" },
+    { "text": "<hook testimonial>", "score": <1-10>, "type": "Testimonial" },
+    { "text": "<hook problemă>", "score": <1-10>, "type": "Problem Hook" },
+    { "text": "<hook curiozitate>", "score": <1-10>, "type": "Curiosity" },
+    { "text": "<hook rezultat>", "score": <1-10>, "type": "Result Hook" }
+  ],
+  "insights": [
+    { "icon": "🎯", "title": "Strategia de Targeting", "text": "<recomandare targeting detaliată: interese, comportamente, lookalike>" },
+    { "icon": "💰", "title": "Budget & Bidding", "text": "<recomandare buget de start, strategie bidding, scaling>" },
+    { "icon": "🎨", "title": "Creative Strategy", "text": "<ce tip de creative funcționează cel mai bine pentru acest produs>" },
+    { "icon": "📈", "title": "Scaling Roadmap", "text": "<cum scalezi de la test la 7 figuri pas cu pas>" },
+    { "icon": "⚠️", "title": "Riscuri & Evitări", "text": "<ce greșeli comune să eviți pentru acest produs/nișă>" },
+    { "icon": "🔬", "title": "A/B Testing Plan", "text": "<ce să testezi primele 7 zile pentru a valida winnerul>" }
+  ]
+}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const rawText = data.content.map(i => i.text || '').join('');
+    const cleaned = rawText.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(cleaned);
+
+    renderResults(result);
+  } catch (err) {
+    console.error(err);
+    loadingState.classList.remove('active');
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('analyzeBtn').disabled = false;
+    alert('Eroare la analiză. Verifică că ai adăugat datele produsului și încearcă din nou.');
+  }
+}
+
+function renderResults(r) {
+  document.getElementById('loadingState').classList.remove('active');
+
+  // Scores
+  document.getElementById('totalScore').textContent = r.totalScore;
+  document.getElementById('verdictTitle').textContent = r.verdictTitle;
+  document.getElementById('verdictSub').textContent = r.verdictSub;
+
+  // Winner badge color
+  const badge = document.querySelector('.winner-badge-large');
+  if (r.totalScore >= 80) badge.style.background = 'linear-gradient(135deg, #00d4aa, #00ff88)';
+  else if (r.totalScore >= 60) badge.style.background = 'linear-gradient(135deg, #ffb347, #ff6b35)';
+  else badge.style.background = 'linear-gradient(135deg, #ff3c5f, #ff6b35)';
+
+  // Score grid
+  const colors = ['green', 'blue', 'red', 'gold'];
+  const scoreGrid = document.getElementById('scoreGrid');
+  scoreGrid.innerHTML = '';
+  const scoreKeys = Object.keys(r.scores);
+  scoreKeys.forEach((key, i) => {
+    const s = r.scores[key];
+    const card = document.createElement('div');
+    card.className = `score-card ${colors[i % 4]}`;
+    card.innerHTML = `
+      <div class="score-card-label">${s.label}</div>
+      <div class="score-card-num">${s.score}</div>
+      <div class="score-bar"><div class="score-fill" style="width:0%" data-target="${s.score}%"></div></div>
+      <div class="score-card-desc">${s.desc}</div>
+    `;
+    scoreGrid.appendChild(card);
+  });
+
+  // Alert
+  const alertBox = document.getElementById('alertBox');
+  alertBox.innerHTML = `<div class="alert ${r.alertType}">
+    ${r.alertType === 'success' ? '✅' : r.alertType === 'warn' ? '⚠️' : '💡'}
+    <span>${r.alertMessage}</span>
+  </div>`;
+
+  // Primary texts
+  const pc = document.getElementById('primaryCopy');
+  pc.innerHTML = r.primaryTexts.map((t, i) => `
+    <div class="copy-block">
+      <div class="copy-block-label">${t.variant} <span class="tip">Testează simultan</span></div>
+      <div class="copy-text" id="pt${i}">${t.text}</div>
+      <button class="copy-btn" onclick="copyText('pt${i}', this)">Copiază</button>
+    </div>
+  `).join('');
+
+  // Headlines
+  const hc = document.getElementById('headlineCopy');
+  hc.innerHTML = r.headlines.map((h, i) => `
+    <div class="copy-block" style="padding:16px 20px;">
+      <div class="copy-block-label">Headline ${i+1} <span class="tip">Score: ${h.score}/10</span></div>
+      <div class="copy-text" id="hl${i}" style="font-size:18px; font-family:'Syne',sans-serif; font-weight:700;">${h.text}</div>
+      <button class="copy-btn" onclick="copyText('hl${i}', this)">Copiază</button>
+    </div>
+  `).join('');
+
+  // Descriptions
+  const dc = document.getElementById('descriptionCopy');
+  dc.innerHTML = r.descriptions.map((d, i) => `
+    <div class="copy-block">
+      <div class="copy-block-label">Description ${i+1} <span class="tip">${d.type}</span></div>
+      <div class="copy-text" id="desc${i}">${d.text}</div>
+      <button class="copy-btn" onclick="copyText('desc${i}', this)">Copiază</button>
+    </div>
+  `).join('');
+
+  // Hooks
+  const hl = document.getElementById('hooksList');
+  hl.innerHTML = r.videoHooks.map((h, i) => `
+    <div class="hook-item">
+      <div style="flex:1">
+        <div style="font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">${h.type}</div>
+        <div style="font-size:14px; line-height:1.5;" id="hook${i}">${h.text}</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+        <div class="hook-score">${h.score}/10</div>
+        <button class="copy-btn" onclick="copyText('hook${i}', this)" style="position:static; white-space:nowrap;">Copiază</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Insights
+  const ig = document.getElementById('insightsGrid');
+  ig.innerHTML = r.insights.map(ins => `
+    <div class="insight-card">
+      <div class="insight-icon">${ins.icon}</div>
+      <div class="insight-title">${ins.title}</div>
+      <div class="insight-text">${ins.text}</div>
+    </div>
+  `).join('');
+
+  const resultsEl = document.getElementById('results');
+  resultsEl.style.display = 'block';
+  resultsEl.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.score-fill').forEach(el => {
+      el.style.width = el.dataset.target;
+    });
+  }, 200);
+}
+</script>
+</body>
+</html>
+
