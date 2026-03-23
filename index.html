@@ -587,7 +587,7 @@ canvas.h,video.h{display:none;}
 <div class="card" style="background:linear-gradient(135deg,rgba(57,255,159,.04),rgba(56,182,255,.03));border-color:rgba(57,255,159,.15);">
   <div class="card-title"><div class="ico">🚀</div>Lansează Analiza Completă</div>
   <div class="card-sub">AI-ul va citi produsul, analiza fiecare clip vizual+audio+captions, va identifica publicul țintă, va rankui clipurile după CPA estimat și va genera 5 variante premium de copy Meta Ads.</div>
-  <button class="big-btn" id="goBtn" onclick="runAnalysis()" disabled>
+  <button class="big-btn" id="goBtn" onclick="runAnalysis()">
     ⚡ ANALIZEAZĂ TOT — GĂSEȘTE WINNERUL + GENEREAZĂ COPY
   </button>
 </div>
@@ -707,78 +707,107 @@ function renderVGrid(){
 }
 
 function checkGoBtn(){
-  document.getElementById('goBtn').disabled = vids.length === 0 && !document.getElementById('pDesc').value.trim();
-  if(vids.length > 0 || document.getElementById('pDesc').value.trim()) document.getElementById('goBtn').disabled = false;
+  // Butonul e mereu activ — userul poate rula cu URL, clips sau câmpuri manuale
+  document.getElementById('goBtn').disabled = false;
 }
-document.getElementById('pDesc').addEventListener('input', checkGoBtn);
 
 // ─── PRODUCT URL FETCH ───
 async function fetchProduct(){
   const url = document.getElementById('productUrl').value.trim();
   if(!url){alert('Adaugă un URL valid!');return;}
   const btn = document.getElementById('fetchBtn');
-  btn.disabled = true; btn.textContent = '⏳ Se citește...';
+  btn.disabled = true; btn.textContent = '⏳ Se analizează...';
+
+  // Show immediate feedback
+  const panel = document.getElementById('productPanel');
+  panel.innerHTML = `<div style="color:var(--sky);font-size:12px;font-family:'Fira Code',monospace;">
+    ⏳ AI analizează URL-ul și extrage informațiile produsului...</div>`;
+  panel.classList.add('show');
 
   try {
-    // Ask Claude to analyze the URL and extract product info
+    // Use Claude to infer product info from the URL structure + domain
+    // (no tools needed - Claude reads the URL and infers based on its knowledge + URL patterns)
     const resp = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:1500,
-        tools:[{type:"web_search_20250305",name:"web_search"}],
-        messages:[{role:'user',content:`Caută și analizează această pagină de produs eCommerce: ${url}
+        max_tokens:1200,
+        messages:[{role:'user',content:`Analizează acest URL de produs eCommerce și extrage toate informațiile posibile din URL, domeniu și structura link-ului. Chiar dacă nu poți accesa pagina direct, încearcă să deduci din URL (slug-ul produsului, numele domeniului, parametrii) ce produs este.
 
-Extrage următoarele informații și returnează STRICT JSON (fără backticks, fără markdown):
+URL: ${url}
+
+Returnează STRICT un obiect JSON valid (fără backticks, fără markdown, fără text în afara JSON):
 {
-  "name": "<numele produsului>",
-  "price": "<prețul>",
-  "description": "<descrierea scurtă a produsului, max 2 propoziții>",
-  "benefits": ["<beneficiu 1>","<beneficiu 2>","<beneficiu 3>","<beneficiu 4>"],
-  "audience": "<publicul țintă detectat: vârstă, gen, interese>",
-  "niche": "<nișa produsului>",
-  "usp": "<ce face produsul unic față de concurență>",
-  "reviews": "<rating și număr recenzii dacă există>",
-  "confidence": <1-10, cât de sigur ești că datele sunt corecte>
+  "name": "<numele produsului dedus din URL/slug — dacă nu se poate deduce, pune 'Produs din ${url.replace(/https?:\/\//,'').split('/')[0]}'>",
+  "price": "<dacă prețul e vizibil în URL pune-l, altfel pune 'Verifică pe site'>",
+  "description": "<descrie produsul bazat pe ce înțelegi din URL — nișă, categorie, tip produs>",
+  "benefits": ["<beneficiu probabil 1 bazat pe tipul produsului>","<beneficiu 2>","<beneficiu 3>"],
+  "audience": "<publicul țintă probabil pentru acest tip de produs>",
+  "niche": "<nișa dedusă din URL>",
+  "usp": "<ce ar putea face unic un astfel de produs — completează manual pentru precizie>",
+  "reviews": "Completează manual",
+  "confidence": <1-5>,
+  "note": "Informații deduse din URL — te rugăm să verifici și completezi manual câmpurile pentru precizie maximă"
 }`}]
       })
     });
+
+    if(!resp.ok) throw new Error('API error: '+resp.status);
     const data = await resp.json();
+    if(data.error) throw new Error(data.error.message||'API error');
+
     const txt = data.content.map(c=>c.text||'').join('');
-    const clean = txt.replace(/```json|```/g,'').trim();
-    const info = JSON.parse(clean);
+    const clean = txt.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g,'')).trim();
+
+    // Try to parse JSON - find first { to last }
+    const start = clean.indexOf('{');
+    const end = clean.lastIndexOf('}');
+    if(start===-1||end===-1) throw new Error('No JSON in response');
+    const info = JSON.parse(clean.substring(start, end+1));
     productData = info;
 
     // Pre-fill fields
-    if(info.name) document.getElementById('pName').value = info.name;
-    if(info.price) document.getElementById('pPrice').value = info.price;
-    if(info.description) document.getElementById('pDesc').value = info.description + (info.benefits ? '\n\nBeneficii: ' + info.benefits.join(', ') : '');
+    if(info.name && !info.name.includes('Produs din')) document.getElementById('pName').value = info.name;
+    if(info.price && info.price!=='Verifică pe site') document.getElementById('pPrice').value = info.price;
+    if(info.description) document.getElementById('pDesc').value = info.description + (info.benefits?.length ? '\n\nBeneficii posibile: ' + info.benefits.join(', ') : '');
     if(info.audience) document.getElementById('pAudience').value = info.audience;
-    if(info.usp) document.getElementById('pUSP').value = info.usp;
-    if(info.reviews) document.getElementById('pReviews').value = info.reviews;
+    if(info.usp && !info.usp.includes('manual')) document.getElementById('pUSP').value = info.usp;
     if(info.niche){
       const sel = document.getElementById('pNiche');
-      for(let o of sel.options){ if(o.value.toLowerCase().includes(info.niche.toLowerCase().split(' ')[0])){ sel.value=o.value;break; }}
+      for(let o of sel.options){
+        if(o.value && info.niche.toLowerCase().includes(o.value.toLowerCase().split(' ')[0].toLowerCase())){
+          sel.value=o.value; break;
+        }
+      }
     }
 
-    // Show chips
+    // Show result chips
     const chips = [];
-    if(info.name) chips.push('📦 '+info.name);
-    if(info.price) chips.push('💰 '+info.price);
-    if(info.audience) chips.push('👥 '+info.audience);
+    chips.push('🔗 URL primit');
+    if(info.name) chips.push('📦 '+info.name.substring(0,30));
+    if(info.audience) chips.push('👥 '+info.audience.substring(0,35));
     if(info.niche) chips.push('🎯 '+info.niche);
-    if(info.confidence) chips.push('✓ Confidence: '+info.confidence+'/10');
+    chips.push(`✓ Confidence: ${info.confidence||'?'}/5`);
 
-    document.getElementById('productChips').innerHTML = chips.map(c=>`<span class="pi-chip">${c}</span>`).join('');
-    document.getElementById('productPanel').classList.add('show');
+    panel.innerHTML = `
+      <div class="pi-label">⚡ URL analizat — verifică și completează câmpurile manual</div>
+      <div class="pi-chips">${chips.map(c=>`<span class="pi-chip">${c}</span>`).join('')}</div>
+      ${info.note?`<div style="margin-top:10px;font-size:11px;color:var(--gold);font-family:'Fira Code',monospace;">⚠ ${info.note}</div>`:''}
+    `;
     checkGoBtn();
   } catch(e){
-    console.error(e);
-    document.getElementById('productPanel').innerHTML='<div style="color:var(--neon2);font-size:12px;">⚠ Nu am putut citi URL-ul automat — completează manual câmpurile de mai jos.</div>';
-    document.getElementById('productPanel').classList.add('show');
+    console.error('fetchProduct error:', e);
+    // Graceful fallback — show helpful message, don't block user
+    panel.innerHTML=`
+      <div style="color:var(--gold);font-size:12px;font-family:'Fira Code',monospace;line-height:1.6;">
+        ⚠ URL-ul a fost salvat. AI-ul îl va folosi în analiza completă.<br>
+        <span style="color:var(--dim);">Completează manual câmpurile de mai jos pentru rezultate optime.</span>
+      </div>`;
+    // Still save the URL for use in full analysis
+    productData = {url: document.getElementById('productUrl').value.trim()};
   }
-  btn.disabled=false; btn.textContent='⚡ Analizează URL';
+  btn.disabled=false; btn.textContent='⚡ Re-analizează URL';
 }
 
 // ─── FRAME EXTRACTION ───
@@ -1276,7 +1305,7 @@ function resetAll(){
   document.getElementById('productPanel').classList.remove('show');
   document.getElementById('logWrap').innerHTML='';
   document.getElementById('progBar').style.width='0%';
-  document.getElementById('goBtn').disabled=true;
+  document.getElementById('goBtn').disabled=false;
   ['pName','pPrice','pDesc','pAudience','pUSP','pBudget','pReviews','productUrl'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value='';
   });
@@ -1285,7 +1314,7 @@ function resetAll(){
 }
 
 // init
-document.getElementById('goBtn').disabled=true;
+document.getElementById('goBtn').disabled=false;
 </script>
 </body>
 </html>
