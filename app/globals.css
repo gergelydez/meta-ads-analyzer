@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
+:root {
+  --font-clash: 'Clash Display', sans-serif;
+  --font-satoshi: 'Satoshi', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: #08080f;
+  color: #f2f2ff;
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ambient background */
+.ambient {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(57,255,159,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 85% 70%, rgba(255,57,119,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 55% 45%, rgba(56,182,255,0.04) 0%, transparent 55%);
+}
+
+.grid-bg {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0e0e1c; }
+::-webkit-scrollbar-thumb { background: #3d3d66; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6b6b99; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes logIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 0.75; transform: translateX(0); }
+}
+@keyframes spinRing {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(57,255,159,0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(57,255,159,0); }
+}
+@keyframes barGrow {
+  from { width: 0%; }
+}
+
+.animate-fade-up { animation: fadeUp 0.5s ease both; }
+.animate-log-in { animation: logIn 0.35s ease both; }
+.spin-ring { animation: spinRing 0.8s linear infinite; }
+.pulse-dot { animation: pulseDot 2s infinite; }
+
+/* Card top line glow */
+.card-glow::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, #39ff9f, transparent);
+  opacity: 0.3;
+}
+
+/* Clash Display font via CDN */
+@font-face {
+  font-family: 'Clash Display';
+  src: url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
+}
