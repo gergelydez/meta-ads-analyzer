@@ -92,15 +92,16 @@ export default function Home() {
     setProgress(5)
     setStatusMsg('Extrag frame-uri din clipuri...')
 
-    // Extract frames from all videos
+    // Extract frames — max 2 videos, 3 frames each to avoid timeout
     const videosWithFrames = []
-    for (let i = 0; i < videos.length; i++) {
-      setProgress(5 + (i + 1) * (25 / Math.max(videos.length, 1)))
+    const maxVids = Math.min(videos.length, 2)
+    for (let i = 0; i < maxVids; i++) {
+      setProgress(5 + (i + 1) * (25 / Math.max(maxVids, 1)))
       const vFile = videos[i]
       const file = vFile.file || null
       let frames: string[] = []
       if (file) {
-        try { frames = await extractFrames(file, 5) } catch (_) {}
+        try { frames = await extractFrames(file, 3) } catch (_) {}
       }
       videosWithFrames.push({
         name: videos[i].name,
@@ -386,3 +387,4 @@ export default function Home() {
     </>
   )
 }
+
