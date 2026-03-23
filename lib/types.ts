@@ -3,8 +3,9 @@ export interface VideoFile {
   name: string
   size: number
   objectUrl: string
-  frames: string[] // base64 JPEG frames
+  frames: string[]
   transcript: string
+  file?: File
 }
 
 export interface ProductInfo {
