@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "app/api/analyze/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/fetch-product/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+
