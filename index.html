@@ -3,1042 +3,1289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CPA Crusher — Video Winner AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>AdWinner PRO — Full AI Meta Ads Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #04040a;
-  --s1: #0b0b16;
-  --s2: #111122;
-  --s3: #181830;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.12);
-  --lime: #c8ff00;
-  --cyan: #00e5ff;
-  --purple: #8b5cf6;
-  --red: #ff4444;
-  --orange: #ff8c00;
-  --text: #eeeeff;
-  --muted: #666688;
-  --muted2: #444466;
+:root{
+  --ink:#08080f;
+  --ink2:#0e0e1c;
+  --ink3:#151528;
+  --ink4:#1c1c35;
+  --wire:rgba(255,255,255,0.07);
+  --wire2:rgba(255,255,255,0.13);
+  --neon:#39ff9f;
+  --neon2:#ff3977;
+  --sky:#38b6ff;
+  --gold:#ffd166;
+  --lav:#a78bfa;
+  --text:#f2f2ff;
+  --dim:#6b6b99;
+  --dim2:#3d3d66;
+  --r:18px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{background:var(--ink);color:var(--text);font-family:'Satoshi',sans-serif;min-height:100vh;overflow-x:hidden;}
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Outfit',sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
+/* ── ambient glow ── */
+.ambient{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(57,255,159,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 60% at 85% 70%, rgba(255,57,119,0.06) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 40% at 55% 45%, rgba(56,182,255,0.04) 0%,transparent 55%);
 }
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+  background-size:48px 48px;}
 
-/* NOISE TEXTURE */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:0;opacity:0.6;
-}
-
-/* SCAN LINE */
-body::after{
-  content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
-  pointer-events:none;z-index:0;
-}
-
-.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 20px;}
+.z1{position:relative;z-index:1;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px;}
 
 /* ── HEADER ── */
 header{
-  padding:28px 0;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  position:sticky;top:0;
-  background:rgba(4,4,10,0.92);
-  backdrop-filter:blur(20px);
-  z-index:100;
+  padding:22px 0;border-bottom:1px solid var(--wire);
+  position:sticky;top:0;z-index:200;
+  background:rgba(8,8,15,0.88);backdrop-filter:blur(24px);
 }
-.logo{display:flex;align-items:center;gap:14px;}
-.logo-mark{
-  width:44px;height:44px;
-  background:var(--lime);
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;
-  box-shadow:0 0 24px rgba(200,255,0,0.4);
-  flex-shrink:0;
+.hdr{display:flex;align-items:center;justify-content:space-between;}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-orb{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--neon),var(--sky));
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 0 28px rgba(57,255,159,0.35);
 }
-.logo-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:26px;letter-spacing:2px;
-  line-height:1;
+.brand-name{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.3px;line-height:1;}
+.brand-name em{color:var(--neon);font-style:normal;}
+.brand-sub{font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.hdr-pill{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 16px;border-radius:20px;
+  border:1px solid rgba(57,255,159,0.25);
+  background:rgba(57,255,159,0.04);
+  font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--neon);
 }
-.logo-name span{color:var(--lime);}
-.logo-tag{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
-
-.header-right{display:flex;align-items:center;gap:12px;}
-.pill{
-  padding:6px 14px;border-radius:20px;
-  font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
-  border:1px solid rgba(200,255,0,0.3);
-  color:var(--lime);
-  background:rgba(200,255,0,0.05);
-}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--neon);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(57,255,159,.5)}50%{box-shadow:0 0 0 5px rgba(57,255,159,0)}}
 
 /* ── HERO ── */
-.hero{padding:72px 0 56px;position:relative;}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--cyan);margin-bottom:24px;
+.hero{padding:68px 0 52px;}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Fira Code',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--sky);margin-bottom:22px;
 }
-.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--cyan);}
+.hero-kicker::before,.hero-kicker::after{content:'//';opacity:.4;}
 .hero h1{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(56px,9vw,110px);
-  line-height:0.92;letter-spacing:3px;
-  margin-bottom:28px;
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(44px,7.5vw,88px);font-weight:700;
+  line-height:.95;letter-spacing:-2px;margin-bottom:22px;
 }
-.hero h1 .line2{
-  -webkit-text-stroke:1px rgba(255,255,255,0.3);
-  color:transparent;
-  display:block;
+.hero h1 .g1{
+  background:linear-gradient(120deg,var(--neon),var(--sky));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.hero h1 .accent{color:var(--lime);}
-.hero-desc{
-  font-size:16px;line-height:1.7;color:var(--muted);
-  max-width:520px;margin-bottom:0;font-weight:300;
+.hero h1 .g2{
+  background:linear-gradient(120deg,var(--neon2),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
+.hero-desc{font-size:16px;color:var(--dim);max-width:560px;line-height:1.75;font-weight:400;margin-bottom:36px;}
 
-/* ── STEP INDICATOR ── */
-.steps-bar{
+/* ── PROGRESS TRACK ── */
+.track{
   display:flex;align-items:center;gap:0;
-  margin:48px 0 40px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-  background:var(--s1);
+  background:var(--ink2);border:1px solid var(--wire);border-radius:14px;
+  overflow:hidden;margin-bottom:44px;
 }
-.step{
-  flex:1;padding:16px 20px;
-  display:flex;align-items:center;gap:12px;
-  border-right:1px solid var(--border);
-  transition:background 0.3s;
+.trk{
+  flex:1;display:flex;align-items:center;gap:10px;
+  padding:14px 18px;border-right:1px solid var(--wire);
+  transition:background .3s;cursor:default;
 }
-.step:last-child{border-right:none;}
-.step.active{background:rgba(200,255,0,0.06);}
-.step.done{background:rgba(0,229,255,0.04);}
-.step-num{
-  width:28px;height:28px;border-radius:8px;
-  background:var(--s3);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;
-  font-size:12px;font-weight:500;
-  color:var(--muted);
-  flex-shrink:0;
-  transition:all 0.3s;
+.trk:last-child{border-right:none;}
+.trk.active{background:rgba(57,255,159,.05);}
+.trk.done{background:rgba(56,182,255,.04);}
+.trk-n{
+  width:26px;height:26px;border-radius:7px;flex-shrink:0;
+  background:var(--ink4);display:flex;align-items:center;justify-content:center;
+  font-family:'Fira Code',monospace;font-size:11px;color:var(--dim);
+  transition:all .3s;
 }
-.step.active .step-num{background:var(--lime);color:#000;}
-.step.done .step-num{background:var(--cyan);color:#000;}
-.step-info{min-width:0;}
-.step-label{font-size:12px;font-weight:600;letter-spacing:0.5px;color:var(--muted);}
-.step.active .step-label{color:var(--text);}
-.step.done .step-label{color:var(--cyan);}
-.step-sub{font-size:10px;color:var(--muted2);}
-@media(max-width:600px){.step-sub{display:none;}.step{padding:12px;}.steps-bar{flex-wrap:wrap;}}
+.trk.active .trk-n{background:var(--neon);color:#000;font-weight:700;}
+.trk.done .trk-n{background:var(--sky);color:#000;font-weight:700;}
+.trk-lbl{font-size:12px;font-weight:600;color:var(--dim);}
+.trk.active .trk-lbl,.trk.done .trk-lbl{color:var(--text);}
+.trk-sl{font-size:10px;color:var(--dim2);}
+@media(max-width:640px){.trk-sl,.trk-lbl:not(:first-child){display:none;}.trk{padding:12px;}}
 
-/* ── UPLOAD SECTION ── */
-.section-card{
-  background:var(--s1);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:36px;
-  margin-bottom:24px;
-  position:relative;
-  overflow:hidden;
+/* ── CARD ── */
+.card{
+  background:var(--ink2);border:1px solid var(--wire);border-radius:var(--r);
+  padding:34px;margin-bottom:22px;position:relative;overflow:hidden;
 }
-.section-card::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--lime),transparent);
-  opacity:0.4;
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.3;
 }
-
-.sec-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:22px;letter-spacing:2px;
-  margin-bottom:4px;
+.card-title{
+  font-family:'Clash Display',sans-serif;font-size:20px;font-weight:600;
+  letter-spacing:-.3px;margin-bottom:4px;
   display:flex;align-items:center;gap:10px;
 }
-.sec-title .ico{
-  width:34px;height:34px;border-radius:8px;
-  background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.2);
-  display:flex;align-items:center;justify-content:center;font-size:16px;
+.card-title .ico{
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(57,255,159,.08);border:1px solid rgba(57,255,159,.15);
+  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;
 }
-.sec-sub{font-size:13px;color:var(--muted);margin-bottom:28px;font-weight:300;}
+.card-sub{font-size:13px;color:var(--dim);margin-bottom:26px;font-weight:300;line-height:1.6;}
 
-/* Upload Drop */
-.drop-zone{
-  border:2px dashed rgba(200,255,0,0.2);
-  border-radius:16px;
-  padding:60px 20px;
-  text-align:center;
-  cursor:pointer;
-  transition:all 0.25s;
-  background:rgba(200,255,0,0.02);
-  position:relative;
+/* ── FIELDS ── */
+.f{margin-bottom:18px;}
+.f label{
+  display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--dim);margin-bottom:7px;font-weight:700;font-family:'Fira Code',monospace;
 }
-.drop-zone:hover,.drop-zone.drag{
-  border-color:rgba(200,255,0,0.5);
-  background:rgba(200,255,0,0.05);
-  transform:scale(1.005);
+.f input,.f textarea,.f select{
+  width:100%;background:var(--ink);border:1px solid var(--wire2);border-radius:10px;
+  color:var(--text);font-family:'Satoshi',sans-serif;font-size:14px;
+  padding:12px 16px;outline:none;transition:border-color .2s,box-shadow .2s;
 }
-.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.drop-icon{font-size:48px;margin-bottom:16px;display:block;}
-.drop-title{font-size:18px;font-weight:700;margin-bottom:6px;}
-.drop-title span{color:var(--lime);}
-.drop-hint{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
-.drop-formats{
-  display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;
+.f input:focus,.f textarea:focus,.f select:focus{
+  border-color:rgba(57,255,159,.4);box-shadow:0 0 0 3px rgba(57,255,159,.07);
 }
-.fmt-tag{
-  padding:4px 12px;border-radius:6px;
-  background:rgba(255,255,255,0.04);border:1px solid var(--border2);
-  font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;
-  letter-spacing:1px;
+.f textarea{resize:vertical;min-height:70px;}
+.f select option{background:#0e0e1c;}
+.url-row{display:flex;gap:10px;}
+.url-row input{flex:1;}
+.fetch-btn{
+  padding:0 20px;border-radius:10px;border:1px solid rgba(56,182,255,.3);
+  background:rgba(56,182,255,.06);color:var(--sky);
+  font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0;
 }
-
-/* Video preview grid */
-.video-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-  gap:16px;margin-top:24px;
-}
-.video-card{
-  background:var(--s2);border:1px solid var(--border);border-radius:14px;
-  overflow:hidden;position:relative;cursor:pointer;
-  transition:all 0.2s;
-}
-.video-card:hover{border-color:rgba(200,255,0,0.3);transform:translateY(-2px);}
-.video-thumb{
-  width:100%;aspect-ratio:9/16;object-fit:cover;
-  display:block;background:#111;
-}
-.video-thumb-placeholder{
-  width:100%;aspect-ratio:9/16;
-  background:linear-gradient(135deg,var(--s2),var(--s3));
-  display:flex;align-items:center;justify-content:center;
-  font-size:32px;
-}
-.video-info{padding:12px;}
-.video-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.video-size{font-size:10px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
-.video-status{
-  position:absolute;top:8px;right:8px;
-  padding:4px 8px;border-radius:6px;
-  font-size:10px;font-weight:600;
-  background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
-}
-.video-status.ready{color:var(--lime);}
-.video-status.analyzing{color:var(--cyan);}
-.video-status.done{color:var(--lime);}
-.video-remove{
-  position:absolute;top:8px;left:8px;
-  width:24px;height:24px;border-radius:6px;
-  background:rgba(0,0,0,0.7);border:none;cursor:pointer;
-  color:var(--muted);font-size:14px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.2s;
-}
-.video-remove:hover{background:var(--red);color:#fff;}
-
-/* Context fields */
-.field{margin-bottom:18px;}
-.field label{
-  display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);margin-bottom:8px;font-weight:600;
-}
-.field input,.field textarea,.field select{
-  width:100%;
-  background:var(--bg);
-  border:1px solid var(--border2);
-  border-radius:10px;
-  color:var(--text);
-  font-family:'Outfit',sans-serif;font-size:14px;
-  padding:13px 16px;outline:none;
-  transition:border-color 0.2s,box-shadow 0.2s;
-}
-.field input:focus,.field textarea:focus,.field select:focus{
-  border-color:rgba(200,255,0,0.4);
-  box-shadow:0 0 0 3px rgba(200,255,0,0.08);
-}
-.field textarea{resize:vertical;min-height:72px;}
-.field select option{background:#0b0b16;}
+.fetch-btn:hover{background:rgba(56,182,255,.12);border-color:rgba(56,182,255,.5);}
+.fetch-btn:disabled{opacity:.4;cursor:not-allowed;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-@media(max-width:580px){.g2{grid-template-columns:1fr;}}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr;}}
 
-/* ── ANALYZE BTN ── */
-.analyze-btn{
-  width:100%;padding:20px;
-  border:none;border-radius:14px;cursor:pointer;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:22px;letter-spacing:3px;
-  background:var(--lime);color:#000;
-  transition:all 0.3s;
-  box-shadow:0 8px 40px rgba(200,255,0,0.25);
-  position:relative;overflow:hidden;
-  margin-top:8px;
+/* product info panel */
+.product-info-panel{
+  display:none;margin-top:16px;
+  background:rgba(57,255,159,.04);border:1px solid rgba(57,255,159,.15);
+  border-radius:12px;padding:18px;animation:fadeUp .4s ease;
 }
-.analyze-btn:hover:not(:disabled){
-  transform:translateY(-3px);
-  box-shadow:0 16px 48px rgba(200,255,0,0.4);
+.product-info-panel.show{display:block;}
+.pi-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--neon);margin-bottom:10px;font-family:'Fira Code',monospace;}
+.pi-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.pi-chip{
+  padding:5px 12px;border-radius:7px;font-size:11px;font-weight:600;
+  background:rgba(57,255,159,.08);border:1px solid rgba(57,255,159,.15);color:var(--neon);
 }
-.analyze-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
-.analyze-btn::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent 50%);
+
+/* ── DROP ZONE ── */
+.drop{
+  border:2px dashed rgba(167,139,250,.25);border-radius:14px;
+  padding:52px 20px;text-align:center;cursor:pointer;
+  transition:all .25s;background:rgba(167,139,250,.02);position:relative;
 }
+.drop:hover,.drop.drag{border-color:rgba(167,139,250,.55);background:rgba(167,139,250,.06);transform:scale(1.003);}
+.drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-icon{font-size:44px;margin-bottom:14px;}
+.drop-title{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:600;margin-bottom:5px;}
+.drop-title span{color:var(--lav);}
+.drop-hint{font-size:12px;color:var(--dim);font-family:'Fira Code',monospace;margin-bottom:14px;}
+.fmt-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
+.fmt{padding:3px 10px;border-radius:5px;font-size:10px;letter-spacing:1px;
+  background:rgba(255,255,255,.04);border:1px solid var(--wire2);color:var(--dim);font-family:'Fira Code',monospace;}
+
+/* video cards */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-top:22px;}
+.vcard{
+  background:var(--ink3);border:1px solid var(--wire);border-radius:13px;
+  overflow:hidden;position:relative;transition:all .2s;
+}
+.vcard:hover{border-color:var(--wire2);transform:translateY(-2px);}
+.vthumb{width:100%;aspect-ratio:9/16;object-fit:cover;background:var(--ink4);display:block;}
+.vthumb-ph{width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,var(--ink3),var(--ink4));
+  display:flex;align-items:center;justify-content:center;font-size:30px;}
+.vstatus{
+  position:absolute;top:8px;right:8px;
+  padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(4px);letter-spacing:.5px;
+}
+.vstatus.ready{color:var(--neon);}
+.vstatus.proc{color:var(--sky);}
+.vdel{
+  position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:6px;
+  background:rgba(0,0,0,.7);border:none;cursor:pointer;
+  color:var(--dim);font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.vdel:hover{background:var(--neon2);color:#fff;}
+.vinfo{padding:10px 12px;}
+.vname{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vmeta{font-size:10px;color:var(--dim);margin-top:2px;font-family:'Fira Code',monospace;}
+
+/* transcript area */
+.transcript-wrap{margin-top:12px;}
+.transcript-field{
+  width:100%;background:var(--ink);border:1px solid var(--wire2);border-radius:10px;
+  color:var(--text);font-family:'Fira Code',monospace;font-size:12px;
+  padding:12px 14px;outline:none;resize:vertical;min-height:64px;
+  transition:border-color .2s;
+}
+.transcript-field:focus{border-color:rgba(57,255,159,.3);}
+.transcript-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--lav);margin-bottom:6px;font-family:'Fira Code',monospace;display:flex;align-items:center;gap:6px;}
+
+/* ── BIG BTN ── */
+.big-btn{
+  width:100%;padding:20px;border:none;border-radius:14px;cursor:pointer;
+  font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;letter-spacing:.5px;
+  background:linear-gradient(120deg,var(--neon),var(--sky));color:#000;
+  transition:all .3s;box-shadow:0 8px 36px rgba(57,255,159,.2);
+  position:relative;overflow:hidden;margin-top:6px;
+}
+.big-btn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 16px 48px rgba(57,255,159,.35);}
+.big-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.big-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent 50%);}
 
 /* ── LOADING ── */
-#loadingView{display:none;padding:80px 20px;text-align:center;}
-#loadingView.on{display:block;}
-.load-ring{
-  width:80px;height:80px;margin:0 auto 32px;
-  border-radius:50%;
-  border:3px solid var(--border2);
-  border-top-color:var(--lime);
-  border-right-color:var(--cyan);
-  animation:spin 0.9s linear infinite;
+#loadView{display:none;padding:80px 20px;text-align:center;}
+#loadView.on{display:block;}
+.spin{
+  width:72px;height:72px;margin:0 auto 28px;border-radius:50%;
+  border:3px solid var(--wire2);
+  border-top-color:var(--neon);border-right-color:var(--sky);
+  animation:spin .8s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg);}}
-.load-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:32px;letter-spacing:3px;margin-bottom:8px;
+.load-h{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px;}
+.load-s{font-size:13px;color:var(--dim);margin-bottom:28px;}
+.prog-wrap{max-width:420px;margin:0 auto 24px;height:3px;background:var(--wire2);border-radius:3px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--neon),var(--sky));width:0%;transition:width .5s ease;border-radius:3px;}
+.log-wrap{max-width:500px;margin:0 auto;display:flex;flex-direction:column;gap:5px;text-align:left;}
+.log-l{
+  font-family:'Fira Code',monospace;font-size:11px;color:var(--dim);
+  display:flex;align-items:flex-start;gap:8px;
+  opacity:0;animation:logIn .35s ease both;
 }
-.load-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
-.load-progress{
-  max-width:400px;margin:0 auto 24px;
-  height:3px;background:var(--border2);border-radius:3px;overflow:hidden;
-}
-.load-bar{
-  height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));
-  width:0%;transition:width 0.5s ease;
-  border-radius:3px;
-}
-.load-log{
-  max-width:480px;margin:0 auto;
-  display:flex;flex-direction:column;gap:6px;
-}
-.log-line{
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;color:var(--muted);
-  display:flex;align-items:center;gap:8px;
-  opacity:0;animation:logIn 0.4s ease both;
-  text-align:left;
-}
-.log-line::before{content:'›';color:var(--lime);flex-shrink:0;}
-@keyframes logIn{from{opacity:0;transform:translateX(-12px)}to{opacity:0.7;transform:none}}
+.log-l .arr{color:var(--neon);flex-shrink:0;}
+@keyframes logIn{from{opacity:0;transform:translateX(-10px)}to{opacity:.75;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
 /* ── RESULTS ── */
-#resultsView{display:none;}
-#resultsView.on{display:block;animation:fadeUp 0.6s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+#resultView{display:none;}
+#resultView.on{display:block;animation:fadeUp .6s ease;}
 
-/* Winner podium */
-.podium-section{margin-bottom:40px;}
-.podium-label{
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;letter-spacing:2px;color:var(--muted);
-  text-transform:uppercase;margin-bottom:20px;
+/* ── PRODUCT BRIEF ── */
+.brief-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:32px;}
+.brief-card{
+  background:var(--ink3);border:1px solid var(--wire);border-radius:14px;padding:18px;
 }
-.podium{display:grid;gap:16px;}
+.brief-card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;font-family:'Fira Code',monospace;}
+.brief-card-val{font-size:14px;font-weight:600;line-height:1.5;}
+.brief-card-val.hl{color:var(--neon);}
 
-.result-card{
-  background:var(--s1);border:1px solid var(--border);border-radius:20px;
-  overflow:hidden;position:relative;
-  transition:all 0.2s;
-}
-.result-card:hover{border-color:var(--border2);transform:translateY(-1px);}
-.result-card.winner-1{
-  border-color:rgba(200,255,0,0.4);
-  box-shadow:0 0 40px rgba(200,255,0,0.1);
-}
-.result-card.winner-1::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--lime),var(--cyan));
-}
-
-.rc-inner{display:flex;align-items:stretch;gap:0;}
-
-.rc-rank{
-  width:64px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--s2);border-right:1px solid var(--border);
-  font-family:'Bebas Neue',sans-serif;
-  font-size:40px;letter-spacing:2px;
-  color:var(--muted2);
-  position:relative;
-}
-.result-card.winner-1 .rc-rank{color:var(--lime);background:rgba(200,255,0,0.05);}
-.result-card.winner-2 .rc-rank{color:var(--cyan);background:rgba(0,229,255,0.04);}
-
-.rc-thumb{
-  width:90px;flex-shrink:0;
-  background:var(--s3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;
-  position:relative;overflow:hidden;
-  border-right:1px solid var(--border);
-}
-.rc-thumb canvas{width:90px;height:100%;object-fit:cover;display:block;}
-.rc-thumb video{width:90px;height:100%;object-fit:cover;display:block;}
-
-.rc-body{flex:1;padding:20px 24px;}
-.rc-name{font-size:15px;font-weight:700;margin-bottom:4px;}
-.rc-verdict{font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:300;line-height:1.5;}
-.rc-scores{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-.sc-pill{
-  padding:5px 12px;border-radius:8px;
-  font-size:11px;font-weight:600;
-  display:flex;align-items:center;gap:6px;
-  font-family:'JetBrains Mono',monospace;
-}
-.sc-pill.cpa{background:rgba(200,255,0,0.1);border:1px solid rgba(200,255,0,0.2);color:var(--lime);}
-.sc-pill.hook{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);color:var(--cyan);}
-.sc-pill.conv{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);color:#a78bfa;}
-.sc-pill.reten{background:rgba(255,140,0,0.1);border:1px solid rgba(255,140,0,0.2);color:var(--orange);}
-
-.rc-strengths{display:flex;flex-direction:column;gap:4px;}
-.strength-item{font-size:12px;color:var(--muted);display:flex;gap:8px;}
-.strength-item::before{content:'✓';color:var(--lime);flex-shrink:0;}
-
-.rc-right{
-  width:140px;flex-shrink:0;
-  border-left:1px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;padding:20px;text-align:center;
-}
-.cpa-score{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:54px;line-height:1;
-  letter-spacing:2px;
-}
-.result-card.winner-1 .cpa-score{color:var(--lime);}
-.result-card.winner-2 .cpa-score{color:var(--cyan);}
-.result-card:not(.winner-1):not(.winner-2) .cpa-score{color:var(--muted);}
-.cpa-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
-.cpa-est{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.4;font-family:'JetBrains Mono',monospace;}
-
-@media(max-width:650px){
-  .rc-inner{flex-wrap:wrap;}
-  .rc-rank{width:100%;height:44px;border-right:none;border-bottom:1px solid var(--border);}
-  .rc-thumb{width:100%;height:120px;}
-  .rc-right{width:100%;flex-direction:row;border-left:none;border-top:1px solid var(--border);}
-}
-
-/* Analysis breakdown */
-.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:32px;}
-.bk-card{
-  background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px;
-}
-.bk-title{
-  font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  margin-bottom:14px;color:var(--lime);
+/* ── VIDEO RANKINGS ── */
+.rank-label{
+  font-family:'Fira Code',monospace;font-size:11px;letter-spacing:2px;color:var(--dim);
+  text-transform:uppercase;margin-bottom:18px;
   display:flex;align-items:center;gap:8px;
 }
-.bk-title .dot{width:6px;height:6px;border-radius:50%;background:var(--lime);}
-.bk-item{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 0;border-bottom:1px solid var(--border);
-  font-size:12px;
-}
-.bk-item:last-child{border-bottom:none;}
-.bk-key{color:var(--muted);}
-.bk-val{font-weight:600;font-family:'JetBrains Mono',monospace;font-size:11px;}
-.bk-val.good{color:var(--lime);}
-.bk-val.ok{color:var(--orange);}
-.bk-val.bad{color:var(--red);}
+.rank-label::before{content:'//';color:var(--neon);opacity:.5;}
 
-/* Recommendation box */
-.reco-box{
-  background:linear-gradient(135deg,rgba(200,255,0,0.05),rgba(0,229,255,0.03));
-  border:1px solid rgba(200,255,0,0.2);
-  border-radius:20px;padding:32px;margin-top:24px;
+.vrank{
+  background:var(--ink2);border:1px solid var(--wire);border-radius:18px;
+  overflow:hidden;margin-bottom:16px;transition:all .2s;
 }
-.reco-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:24px;letter-spacing:2px;margin-bottom:4px;
-  display:flex;align-items:center;gap:10px;
+.vrank:hover{border-color:var(--wire2);}
+.vrank.top{border-color:rgba(57,255,159,.35);box-shadow:0 0 32px rgba(57,255,159,.08);}
+.vrank.top::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--neon),var(--sky));}
+
+.vr-row{display:flex;align-items:stretch;}
+.vr-badge{
+  width:62px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:var(--ink3);border-right:1px solid var(--wire);
+  font-family:'Clash Display',sans-serif;font-size:38px;font-weight:700;color:var(--dim2);
+  flex-direction:column;gap:4px;
 }
-.reco-title span{color:var(--lime);}
-.reco-text{font-size:14px;color:var(--muted);line-height:1.7;margin-top:12px;}
-.reco-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
-.reco-action{
-  padding:10px 18px;border-radius:10px;
-  background:rgba(200,255,0,0.08);border:1px solid rgba(200,255,0,0.2);
-  font-size:12px;font-weight:600;color:var(--lime);
-  display:flex;align-items:center;gap:6px;
+.vrank.top .vr-badge{color:var(--neon);}
+.vrank.two .vr-badge{color:var(--sky);}
+.vrank.thr .vr-badge{color:var(--gold);}
+.vr-preview{
+  width:80px;flex-shrink:0;border-right:1px solid var(--wire);
+  background:var(--ink4);overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+.vr-preview video{width:80px;height:100%;object-fit:cover;display:block;}
+.vr-preview .no-vid{font-size:24px;}
+.vr-body{flex:1;padding:18px 22px;}
+.vr-name{font-size:14px;font-weight:700;margin-bottom:5px;}
+.vr-verdict{font-size:12px;color:var(--dim);line-height:1.55;margin-bottom:12px;font-weight:300;}
+.vr-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+.vr-pill{
+  padding:4px 11px;border-radius:7px;font-size:10px;font-weight:700;
+  font-family:'Fira Code',monospace;display:flex;align-items:center;gap:5px;
+}
+.vr-pill.g{background:rgba(57,255,159,.08);border:1px solid rgba(57,255,159,.18);color:var(--neon);}
+.vr-pill.b{background:rgba(56,182,255,.07);border:1px solid rgba(56,182,255,.15);color:var(--sky);}
+.vr-pill.p{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18);color:var(--lav);}
+.vr-pill.o{background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.15);color:var(--gold);}
+.vr-pill.r{background:rgba(255,57,119,.07);border:1px solid rgba(255,57,119,.15);color:var(--neon2);}
+.vr-strengths{display:flex;flex-direction:column;gap:4px;}
+.vr-str{font-size:11px;color:var(--dim);display:flex;gap:7px;align-items:flex-start;}
+.vr-str::before{content:'✓';color:var(--neon);flex-shrink:0;font-size:10px;margin-top:1px;}
+.vr-weak{font-size:11px;color:rgba(255,57,119,.7);display:flex;gap:7px;align-items:flex-start;}
+.vr-weak::before{content:'△';flex-shrink:0;font-size:10px;margin-top:1px;}
+.vr-right{
+  width:130px;flex-shrink:0;border-left:1px solid var(--wire);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;padding:18px 14px;text-align:center;
+}
+.vr-score{
+  font-family:'Clash Display',sans-serif;font-size:58px;font-weight:700;line-height:1;
+  background:linear-gradient(135deg,var(--neon),var(--sky));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.vrank.two .vr-score{background:linear-gradient(135deg,var(--sky),var(--lav));-webkit-background-clip:text;background-clip:text;}
+.vrank.thr .vr-score{background:linear-gradient(135deg,var(--gold),var(--neon2));-webkit-background-clip:text;background-clip:text;}
+.vrank:not(.top):not(.two):not(.thr) .vr-score{background:none;-webkit-text-fill-color:var(--dim);color:var(--dim);}
+.vr-score-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px;}
+.vr-cpa{font-size:11px;color:var(--dim);margin-top:10px;font-family:'Fira Code',monospace;line-height:1.4;}
+.vr-audio-badge{
+  margin-top:8px;padding:4px 10px;border-radius:6px;
+  font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:var(--lav);
+}
+@media(max-width:700px){
+  .vr-row{flex-wrap:wrap;}
+  .vr-badge{width:100%;height:44px;flex-direction:row;border-right:none;border-bottom:1px solid var(--wire);}
+  .vr-preview{width:100%;height:100px;}
+  .vr-right{width:100%;flex-direction:row;border-left:none;border-top:1px solid var(--wire);}
 }
 
-/* Reset */
-.reset-btn{
-  display:block;width:100%;margin-top:32px;
-  padding:16px;border-radius:14px;border:1px solid var(--border2);
-  background:transparent;color:var(--muted);
-  font-family:'Bebas Neue',sans-serif;
-  font-size:18px;letter-spacing:2px;cursor:pointer;
-  transition:all 0.2s;
+/* ── COPY SECTION ── */
+.copy-section{margin-top:36px;}
+.copy-sec-title{
+  font-family:'Clash Display',sans-serif;font-size:26px;font-weight:700;
+  letter-spacing:-.3px;margin-bottom:4px;
 }
-.reset-btn:hover{border-color:var(--border);color:var(--text);background:var(--s1);}
+.copy-sec-sub{font-size:13px;color:var(--dim);margin-bottom:24px;font-weight:300;}
+.copy-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.ctab{
+  padding:8px 18px;border-radius:8px;border:1px solid var(--wire);
+  background:transparent;color:var(--dim);font-family:'Satoshi',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;
+}
+.ctab.on{
+  background:rgba(57,255,159,.08);border-color:rgba(57,255,159,.25);color:var(--neon);
+}
+.cpanel{display:none;}
+.cpanel.on{display:flex;flex-direction:column;gap:16px;animation:fadeUp .3s ease;}
+.cblock{
+  background:var(--ink3);border:1px solid var(--wire);border-radius:14px;
+  padding:22px;position:relative;
+}
+.cblock-tag{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--lav);margin-bottom:10px;font-family:'Fira Code',monospace;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.cblock-tag .badge{
+  padding:2px 8px;border-radius:5px;font-size:9px;
+  background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:var(--lav);
+}
+.cblock-tag .score-badge{
+  padding:2px 8px;border-radius:5px;font-size:9px;
+  background:rgba(57,255,159,.1);border:1px solid rgba(57,255,159,.2);color:var(--neon);
+}
+.cblock-text{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;font-weight:400;}
+.cblock-hl{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.2px;}
+.cpbtn{
+  position:absolute;top:16px;right:16px;
+  padding:5px 13px;background:rgba(255,255,255,.04);
+  border:1px solid var(--wire2);border-radius:7px;
+  color:var(--dim);font-family:'Fira Code',monospace;font-size:10px;cursor:pointer;transition:all .2s;
+}
+.cpbtn:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.cpbtn.ok{color:var(--neon);border-color:rgba(57,255,159,.3);}
+
+/* hook items */
+.hook-item{
+  background:var(--ink3);border:1px solid var(--wire);border-radius:12px;padding:16px 18px;
+  border-left:3px solid var(--neon2);
+  display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+}
+.hook-body{flex:1;}
+.hook-type{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--neon2);margin-bottom:5px;font-family:'Fira Code',monospace;}
+.hook-text{font-size:13px;line-height:1.6;}
+.hook-right{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
+.hook-score{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:700;color:var(--neon2);}
+.hook-score-lbl{font-size:9px;color:var(--dim);letter-spacing:1px;}
+
+/* insights */
+.insights-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.ins-card{background:var(--ink3);border:1px solid var(--wire);border-radius:14px;padding:20px;}
+.ins-icon{font-size:26px;margin-bottom:10px;}
+.ins-title{font-family:'Clash Display',sans-serif;font-size:15px;font-weight:600;margin-bottom:7px;}
+.ins-text{font-size:12px;color:var(--dim);line-height:1.65;font-weight:300;}
+
+/* alert */
+.alert{
+  border-radius:12px;padding:14px 18px;font-size:13px;line-height:1.6;
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;
+}
+.alert.success{background:rgba(57,255,159,.05);border:1px solid rgba(57,255,159,.2);color:var(--neon);}
+.alert.warn{background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.2);color:var(--gold);}
+.alert.info{background:rgba(56,182,255,.05);border:1px solid rgba(56,182,255,.2);color:var(--sky);}
+
+/* restart */
+.restart-btn{
+  display:block;width:100%;margin-top:28px;
+  padding:16px;border-radius:13px;border:1px solid var(--wire2);
+  background:transparent;color:var(--dim);font-family:'Clash Display',sans-serif;
+  font-size:17px;font-weight:600;letter-spacing:.3px;cursor:pointer;transition:all .2s;
+}
+.restart-btn:hover{background:var(--ink2);color:var(--text);border-color:var(--wire2);}
+
+/* divider */
+.divider{height:1px;background:var(--wire);margin:32px 0;}
 
 footer{
-  padding:40px 0;text-align:center;
-  color:var(--muted2);font-size:11px;
-  border-top:1px solid var(--border);
-  margin-top:80px;font-family:'JetBrains Mono',monospace;
-  letter-spacing:1px;
+  padding:36px 0;text-align:center;border-top:1px solid var(--wire);
+  color:var(--dim2);font-size:11px;font-family:'Fira Code',monospace;
+  letter-spacing:1px;margin-top:72px;
 }
-footer span{color:var(--lime);}
+footer span{color:var(--neon);}
 
-/* hidden canvas */
-canvas.hidden{display:none;}
+canvas.h,video.h{display:none;}
 </style>
 </head>
 <body>
+<div class="ambient"></div>
+<div class="grid-bg"></div>
 
+<div class="z1">
 <div class="wrap">
 
-<header>
-  <div class="logo">
-    <div class="logo-mark">🎯</div>
+<!-- HEADER -->
+<header class="z1">
+<div class="wrap">
+<div class="hdr">
+  <div class="brand">
+    <div class="brand-orb">🏆</div>
     <div>
-      <div class="logo-name">CPA <span>CRUSHER</span></div>
-      <div class="logo-tag">Video Winner AI</div>
+      <div class="brand-name">AdWinner <em>PRO</em></div>
+      <div class="brand-sub">Full AI Meta Ads Engine</div>
     </div>
   </div>
-  <div class="header-right">
-    <div class="pill">⚡ Powered by Claude AI</div>
-  </div>
+  <div class="hdr-pill"><div class="pulse-dot"></div>AI Live</div>
+</div>
+</div>
 </header>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow">Meta Ads Performance Analyzer</div>
+  <div class="hero-kicker">eCommerce Performance Intelligence</div>
   <h1>
-    CARE CLIP<br>
-    <span class="line2">ADUCE <span class="accent">CPA</span></span><br>
-    <span class="line2">CEL MAI MIC?</span>
+    <span class="g1">ANALIZĂ</span><br>
+    <span class="g2">COMPLETĂ.</span><br>
+    COPY PERFECT.
   </h1>
-  <p class="hero-desc">Încarci clipurile tale. AI-ul vede fiecare cadru, analizează hook-ul, flow-ul și potențialul de conversie — și îți spune exact care să rulezi.</p>
+  <p class="hero-desc">AI-ul citește pagina produsului, analizează clipurile vizual + audio + captions, identifică publicul țintă și generează copy Meta Ads care convertește la CPA minim.</p>
 </section>
 
-<!-- STEPS -->
-<div class="steps-bar" id="stepsBar">
-  <div class="step active" id="step1">
-    <div class="step-num">1</div>
-    <div class="step-info"><div class="step-label">Încarci Clipurile</div><div class="step-sub">max 8 video-uri</div></div>
+<!-- TRACK -->
+<div class="track" id="track">
+  <div class="trk active" id="t1"><div class="trk-n">1</div><div><div class="trk-lbl">Produs URL</div><div class="trk-sl">AI scrape automat</div></div></div>
+  <div class="trk" id="t2"><div class="trk-n">2</div><div><div class="trk-lbl">Clipuri Video</div><div class="trk-sl">visual + audio + captions</div></div></div>
+  <div class="trk" id="t3"><div class="trk-n">3</div><div><div class="trk-lbl">Analiză AI</div><div class="trk-sl">scoring complet</div></div></div>
+  <div class="trk" id="t4"><div class="trk-n">4</div><div><div class="trk-lbl">Rezultate + Copy</div><div class="trk-sl">5 variante premium</div></div></div>
+</div>
+
+<!-- MAIN FORM -->
+<div id="formView">
+
+<!-- STEP 1: PRODUCT URL -->
+<div class="card">
+  <div class="card-title"><div class="ico">🔗</div>Link Produs</div>
+  <div class="card-sub">Adaugă URL-ul produsului tău. AI-ul va citi pagina și va extrage automat: titlu, descriere, beneficii, preț, recenzii și va detecta publicul țintă. Dacă scraping-ul nu funcționează, completează manual câmpurile de mai jos.</div>
+
+  <div class="f">
+    <label>URL Produs</label>
+    <div class="url-row">
+      <input type="text" id="productUrl" placeholder="https://magazinul-tau.ro/produs-amazing..." />
+      <button class="fetch-btn" id="fetchBtn" onclick="fetchProduct()">⚡ Analizează URL</button>
+    </div>
   </div>
-  <div class="step" id="step2">
-    <div class="step-num">2</div>
-    <div class="step-info"><div class="step-label">Context Produs</div><div class="step-sub">nișă, audiență, preț</div></div>
+
+  <div class="product-info-panel" id="productPanel">
+    <div class="pi-label">✓ Informații detectate automat</div>
+    <div class="pi-chips" id="productChips"></div>
   </div>
-  <div class="step" id="step3">
-    <div class="step-num">3</div>
-    <div class="step-info"><div class="step-label">AI Analizează</div><div class="step-sub">frame-by-frame</div></div>
+
+  <div class="divider" style="margin:22px 0 22px;"></div>
+  <div style="font-size:11px;color:var(--dim);margin-bottom:14px;font-family:'Fira Code',monospace;letter-spacing:1px;text-transform:uppercase;">↓ Completează sau corectează manual</div>
+
+  <div class="g2">
+    <div class="f"><label>Nume Produs</label><input type="text" id="pName" placeholder="ex: Serum Vitamina C Pro"/></div>
+    <div class="f"><label>Preț (RON/EUR)</label><input type="text" id="pPrice" placeholder="ex: 189 RON"/></div>
   </div>
-  <div class="step" id="step4">
-    <div class="step-num">4</div>
-    <div class="step-info"><div class="step-label">Winner Revealed</div><div class="step-sub">ranking + strategie</div></div>
+  <div class="f"><label>Descriere & Beneficii Principale</label>
+    <textarea id="pDesc" placeholder="ex: Serum cu 20% Vitamina C pură + Niacinamidă. Reduce petele pigmentare în 21 zile, luminozitate instantă, texture ultra-ușoară, non-comedogenică. Dermatologic testat."></textarea>
+  </div>
+  <div class="g2">
+    <div class="f"><label>Public Țintă Detectat / Manual</label><input type="text" id="pAudience" placeholder="ex: Femei 28-50, beauty conscious"/></div>
+    <div class="f"><label>Nișă</label>
+      <select id="pNiche">
+        <option value="">Selectează nișa...</option>
+        <option>Beauty & Skincare</option><option>Fashion & Îmbrăcăminte</option>
+        <option>Fitness & Sport</option><option>Home & Living</option>
+        <option>Tech & Gadgets</option><option>Pet Products</option>
+        <option>Suplimente & Sănătate</option><option>Copii & Familie</option>
+        <option>Food & Gourmet</option><option>Jewellery & Accesorii</option>
+        <option>Hobby & Lifestyle</option><option>Alt produs</option>
+      </select>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="f"><label>USP — Ce îl face unic?</label><input type="text" id="pUSP" placeholder="ex: Formula patentată, livrare gratis, 30 zile retur"/></div>
+    <div class="f"><label>Obiectiv Campanie Meta</label>
+      <select id="pObjective">
+        <option>Conversii (Purchase)</option><option>Add to Cart</option>
+        <option>Lead Generation</option><option>Awareness + Retargeting</option>
+      </select>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="f"><label>Buget Zilnic Estimat</label><input type="text" id="pBudget" placeholder="ex: 50 EUR/zi"/></div>
+    <div class="f"><label>Recenzii / Social Proof</label><input type="text" id="pReviews" placeholder="ex: 4.8★ din 1200 recenzii, #1 în nișă"/></div>
   </div>
 </div>
 
-<!-- UPLOAD FORM -->
-<div id="uploadView">
+<!-- STEP 2: VIDEOS -->
+<div class="card">
+  <div class="card-title"><div class="ico">🎬</div>Clipuri Marketing</div>
+  <div class="card-sub">Încarcă până la 8 clipuri. AI-ul analizează: <strong>vizualul frame-by-frame</strong> + <strong>voiceoverul/audio</strong> (descrie-l mai jos) + <strong>captionsurile/textele</strong> din clip. Cu cât dai mai mult context audio, cu atât analiza e mai precisă.</div>
 
-  <div class="section-card">
-    <div class="sec-title"><div class="ico">🎬</div> Clipuri Marketing</div>
-    <div class="sec-sub">Trage clipurile direct aici sau click pentru upload. AI-ul va extrage imagini din fiecare clip și le va analiza vizual.</div>
-
-    <div class="drop-zone" id="dropZone"
-      ondragover="ev(event)" ondragleave="evLeave(event)" ondrop="onDrop(event)">
-      <span class="drop-icon">📁</span>
-      <div class="drop-title">Trage clipurile aici sau <span>Browse</span></div>
-      <div class="drop-hint">Până la 8 clipuri simultan</div>
-      <div class="drop-formats">
-        <span class="fmt-tag">MP4</span>
-        <span class="fmt-tag">MOV</span>
-        <span class="fmt-tag">AVI</span>
-        <span class="fmt-tag">WEBM</span>
-        <span class="fmt-tag">MKV</span>
-      </div>
-      <input type="file" id="fileInput" multiple accept="video/*" onchange="onFilePick(event)">
+  <div class="drop" id="dropZone" ondragover="dEv(event)" ondragleave="dLeave(event)" ondrop="dDrop(event)">
+    <div class="drop-icon">🎥</div>
+    <div class="drop-title">Drag & Drop sau <span>Browse</span></div>
+    <div class="drop-hint">Până la 8 clipuri — AI analizează vizual + audio + text</div>
+    <div class="fmt-row">
+      <span class="fmt">MP4</span><span class="fmt">MOV</span><span class="fmt">WEBM</span>
+      <span class="fmt">AVI</span><span class="fmt">MKV</span>
     </div>
-
-    <div class="video-grid" id="videoGrid"></div>
+    <input type="file" id="vidInput" multiple accept="video/*" onchange="onPick(event)">
   </div>
 
-  <div class="section-card">
-    <div class="sec-title"><div class="ico">📋</div> Context Produs</div>
-    <div class="sec-sub">Oferă AI-ului contextul necesar pentru o analiză corectă.</div>
-
-    <div class="g2">
-      <div class="field">
-        <label>Nișă / Categorie</label>
-        <select id="ctxNiche">
-          <option value="">Selectează...</option>
-          <option>Beauty & Skincare</option>
-          <option>Fashion & Îmbrăcăminte</option>
-          <option>Fitness & Sport</option>
-          <option>Home & Living</option>
-          <option>Tech & Gadgets</option>
-          <option>Pet Products</option>
-          <option>Suplimente & Sănătate</option>
-          <option>Copii & Familie</option>
-          <option>Food & Gourmet</option>
-          <option>Hobby & Lifestyle</option>
-          <option>Jewellery & Accesorii</option>
-          <option>Alt produs</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Preț Produs</label>
-        <input type="text" id="ctxPrice" placeholder="ex: 149 RON / 29 EUR">
-      </div>
-    </div>
-
-    <div class="g2">
-      <div class="field">
-        <label>Public Țintă</label>
-        <input type="text" id="ctxAudience" placeholder="ex: Femei 25-45, interesate de skincare">
-      </div>
-      <div class="field">
-        <label>Obiectiv Campanie</label>
-        <select id="ctxObjective">
-          <option>Conversii (Purchases)</option>
-          <option>Add to Cart</option>
-          <option>Lead Generation</option>
-          <option>Awareness + Retargeting</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Ce face produsul? Beneficii principale</label>
-      <textarea id="ctxProduct" placeholder="ex: Serum cu vitamina C care reduce petele pigmentare în 21 zile, texture ușoară, potrivit pentru orice tip de ten, livrare gratuită + 30 zile garanție..."></textarea>
-    </div>
-
-    <div class="field">
-      <label>Buget zilnic estimat (USD/EUR)</label>
-      <input type="text" id="ctxBudget" placeholder="ex: 50 EUR/zi">
-    </div>
-
-    <button class="analyze-btn" id="analyzeBtn" onclick="startAnalysis()">
-      🔍 ANALIZEAZĂ CLIPURILE — GĂSEȘTE WINNERUL
-    </button>
-  </div>
-
+  <div class="vgrid" id="vgrid"></div>
 </div>
+
+<!-- BIG ANALYZE BTN -->
+<div class="card" style="background:linear-gradient(135deg,rgba(57,255,159,.04),rgba(56,182,255,.03));border-color:rgba(57,255,159,.15);">
+  <div class="card-title"><div class="ico">🚀</div>Lansează Analiza Completă</div>
+  <div class="card-sub">AI-ul va citi produsul, analiza fiecare clip vizual+audio+captions, va identifica publicul țintă, va rankui clipurile după CPA estimat și va genera 5 variante premium de copy Meta Ads.</div>
+  <button class="big-btn" id="goBtn" onclick="runAnalysis()" disabled>
+    ⚡ ANALIZEAZĂ TOT — GĂSEȘTE WINNERUL + GENEREAZĂ COPY
+  </button>
+</div>
+
+</div><!-- /formView -->
 
 <!-- LOADING -->
-<div id="loadingView">
-  <div class="load-ring"></div>
-  <div class="load-title">AI ANALIZEAZĂ CLIPURILE</div>
-  <div class="load-sub">Procesăm fiecare frame pentru CPA prediction</div>
-  <div class="load-progress"><div class="load-bar" id="loadBar"></div></div>
-  <div class="load-log" id="loadLog"></div>
+<div id="loadView">
+  <div class="spin"></div>
+  <div class="load-h">AI PROCESEAZĂ TOTUL</div>
+  <div class="load-s" id="loadSub">Inițializare motor de analiză...</div>
+  <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+  <div class="log-wrap" id="logWrap"></div>
 </div>
 
 <!-- RESULTS -->
-<div id="resultsView">
+<div id="resultView">
 
-  <div class="podium-section">
-    <div class="podium-label">// ranking final — sortat după CPA estimat (cel mai mic = mai bun)</div>
-    <div class="podium" id="podiumCards"></div>
+  <!-- Product Brief -->
+  <div class="card">
+    <div class="card-title"><div class="ico">📋</div>Brief Produs — Detectat de AI</div>
+    <div class="card-sub">Tot ce AI-ul a extras și înțeles despre produsul tău, publicul țintă și potențialul de conversie.</div>
+    <div class="brief-grid" id="briefGrid"></div>
+    <div id="briefAlert"></div>
   </div>
 
-  <div class="breakdown-grid" id="breakdownGrid"></div>
+  <!-- Video Rankings -->
+  <div class="card">
+    <div class="card-title"><div class="ico">🏆</div>Ranking Clipuri — CPA Winner</div>
+    <div class="card-sub">Clipurile tale analizate vizual + audio + captions și rankuite după potențialul de CPA minim pe Meta Ads.</div>
+    <div class="rank-label">ranking final — cel mai mare score = CPA cel mai mic</div>
+    <div id="rankCards"></div>
+  </div>
 
-  <div class="reco-box" id="recoBox"></div>
+  <!-- Copy Section -->
+  <div class="card copy-section">
+    <div class="copy-sec-title">✍️ Copy Meta Ads — 5 Variante Premium</div>
+    <div class="copy-sec-sub">Generat de AI pe baza produsului, publicului detectat și winner-ului din clipuri. Testat pe framework-urile celor mai profitabile campanii de eCommerce.</div>
 
-  <button class="reset-btn" onclick="resetApp()">↩ ANALIZEAZĂ ALTE CLIPURI</button>
+    <div class="copy-tabs">
+      <button class="ctab on" onclick="switchTab('pt',this)">📝 Primary Text</button>
+      <button class="ctab" onclick="switchTab('hl',this)">💥 Headlines</button>
+      <button class="ctab" onclick="switchTab('desc',this)">📌 Descriptions</button>
+      <button class="ctab" onclick="switchTab('hooks',this)">🎣 Video Hooks</button>
+      <button class="ctab" onclick="switchTab('strat',this)">📊 Strategie</button>
+    </div>
 
-</div>
+    <div class="cpanel on" id="cp-pt"></div>
+    <div class="cpanel" id="cp-hl"></div>
+    <div class="cpanel" id="cp-desc"></div>
+    <div class="cpanel" id="cp-hooks"></div>
+    <div class="cpanel" id="cp-strat"><div class="insights-grid" id="stratGrid"></div></div>
+  </div>
+
+  <button class="restart-btn" onclick="resetAll()">↩ Analizează Alt Produs & Clipuri</button>
+
+</div><!-- /resultView -->
 
 </div><!-- /wrap -->
+</div><!-- /z1 -->
 
-<footer>
-  CPA CRUSHER © 2026 — <span>AI-POWERED</span> Meta Ads Optimizer — frame analysis engine v2.4
-</footer>
+<footer><div class="wrap">AdWinner <span>PRO</span> — Full AI Meta Ads Engine — frame + audio + copy engine v3.0</div></footer>
 
-<!-- Hidden video + canvas for frame extraction -->
-<video id="hiddenVideo" class="hidden" muted crossorigin="anonymous" playsinline></video>
-<canvas id="hiddenCanvas" class="hidden"></canvas>
+<!-- hidden els for frame extraction -->
+<video class="h" id="hVid" muted playsinline crossorigin="anonymous"></video>
+<canvas class="h" id="hCvs"></canvas>
 
 <script>
 // ─── STATE ───
-let videos = []; // {file, name, size, objectUrl, frames:[base64]}
+let vids = []; // {file, name, size, url, frames:[], transcript:''}
+let productData = {}; // from URL fetch or manual
 
-// ─── DRAG & DROP ───
-function ev(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
-function evLeave(e){document.getElementById('dropZone').classList.remove('drag');}
-function onDrop(e){
+// ─── DRAG/DROP ───
+function dEv(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
+function dLeave(e){document.getElementById('dropZone').classList.remove('drag');}
+function dDrop(e){
   e.preventDefault();
   document.getElementById('dropZone').classList.remove('drag');
-  addFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('video/')));
+  addVids(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('video/')));
 }
-function onFilePick(e){addFiles(Array.from(e.target.files));}
+function onPick(e){addVids(Array.from(e.target.files));}
 
-function addFiles(files){
-  const allowed = files.slice(0, 8 - videos.length);
-  allowed.forEach(f=>{
-    if(videos.find(v=>v.name===f.name)) return;
-    const obj = URL.createObjectURL(f);
-    videos.push({file:f,name:f.name,size:f.size,objectUrl:obj,frames:[]});
+function addVids(files){
+  const toAdd = files.slice(0, 8 - vids.length);
+  toAdd.forEach(f=>{
+    if(vids.find(v=>v.name===f.name)) return;
+    vids.push({file:f, name:f.name, size:f.size, url:URL.createObjectURL(f), frames:[], transcript:''});
   });
-  renderGrid();
-  document.getElementById('analyzeBtn').disabled = videos.length === 0;
+  renderVGrid();
+  checkGoBtn();
 }
 
-function removeVideo(name){
-  videos = videos.filter(v=>v.name!==name);
-  renderGrid();
-  document.getElementById('analyzeBtn').disabled = videos.length === 0;
+function removeVid(name){
+  vids = vids.filter(v=>v.name!==name);
+  renderVGrid();
+  checkGoBtn();
 }
 
-function renderGrid(){
-  const grid = document.getElementById('videoGrid');
-  if(videos.length===0){grid.innerHTML='';return;}
-  grid.innerHTML = videos.map((v,i)=>`
-    <div class="video-card" id="vc-${i}">
-      <video class="video-thumb" src="${v.objectUrl}" muted preload="metadata" playsinline
-        onloadedmetadata="captureThumb(${i})" style="display:block;"></video>
-      <button class="video-remove" onclick="removeVideo('${v.name.replace(/'/g,"\\'")}')">✕</button>
-      <div class="video-status ready">READY</div>
-      <div class="video-info">
-        <div class="video-name">${v.name}</div>
-        <div class="video-size">${(v.size/1024/1024).toFixed(1)} MB</div>
+function renderVGrid(){
+  const g = document.getElementById('vgrid');
+  if(!vids.length){g.innerHTML='';return;}
+  g.innerHTML = vids.map((v,i)=>`
+    <div class="vcard" id="vc${i}">
+      <video class="vthumb" src="${v.url}" muted preload="metadata" playsinline></video>
+      <button class="vdel" onclick="removeVid('${v.name.replace(/'/g,"\\'")}')">✕</button>
+      <div class="vstatus ready">READY</div>
+      <div class="vinfo">
+        <div class="vname">${v.name}</div>
+        <div class="vmeta">${(v.size/1024/1024).toFixed(1)} MB</div>
+      </div>
+      <div class="transcript-wrap" style="padding:0 10px 10px;">
+        <div class="transcript-label">🎙 Voiceover / Captions / Text din clip</div>
+        <textarea class="transcript-field" id="tr${i}" placeholder="Scrie ce se aude și ce apare scris în clip:&#10;ex: 'Dacă ai pete pe față, ascultă asta...' + text overlay: 'REZULTATE ÎN 14 ZILE' + CTA: 'Link în bio'" rows="3" onchange="vids[${i}].transcript=this.value"></textarea>
       </div>
     </div>
   `).join('');
 }
 
-function captureThumb(i){}
+function checkGoBtn(){
+  document.getElementById('goBtn').disabled = vids.length === 0 && !document.getElementById('pDesc').value.trim();
+  if(vids.length > 0 || document.getElementById('pDesc').value.trim()) document.getElementById('goBtn').disabled = false;
+}
+document.getElementById('pDesc').addEventListener('input', checkGoBtn);
+
+// ─── PRODUCT URL FETCH ───
+async function fetchProduct(){
+  const url = document.getElementById('productUrl').value.trim();
+  if(!url){alert('Adaugă un URL valid!');return;}
+  const btn = document.getElementById('fetchBtn');
+  btn.disabled = true; btn.textContent = '⏳ Se citește...';
+
+  try {
+    // Ask Claude to analyze the URL and extract product info
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        tools:[{type:"web_search_20250305",name:"web_search"}],
+        messages:[{role:'user',content:`Caută și analizează această pagină de produs eCommerce: ${url}
+
+Extrage următoarele informații și returnează STRICT JSON (fără backticks, fără markdown):
+{
+  "name": "<numele produsului>",
+  "price": "<prețul>",
+  "description": "<descrierea scurtă a produsului, max 2 propoziții>",
+  "benefits": ["<beneficiu 1>","<beneficiu 2>","<beneficiu 3>","<beneficiu 4>"],
+  "audience": "<publicul țintă detectat: vârstă, gen, interese>",
+  "niche": "<nișa produsului>",
+  "usp": "<ce face produsul unic față de concurență>",
+  "reviews": "<rating și număr recenzii dacă există>",
+  "confidence": <1-10, cât de sigur ești că datele sunt corecte>
+}`}]
+      })
+    });
+    const data = await resp.json();
+    const txt = data.content.map(c=>c.text||'').join('');
+    const clean = txt.replace(/```json|```/g,'').trim();
+    const info = JSON.parse(clean);
+    productData = info;
+
+    // Pre-fill fields
+    if(info.name) document.getElementById('pName').value = info.name;
+    if(info.price) document.getElementById('pPrice').value = info.price;
+    if(info.description) document.getElementById('pDesc').value = info.description + (info.benefits ? '\n\nBeneficii: ' + info.benefits.join(', ') : '');
+    if(info.audience) document.getElementById('pAudience').value = info.audience;
+    if(info.usp) document.getElementById('pUSP').value = info.usp;
+    if(info.reviews) document.getElementById('pReviews').value = info.reviews;
+    if(info.niche){
+      const sel = document.getElementById('pNiche');
+      for(let o of sel.options){ if(o.value.toLowerCase().includes(info.niche.toLowerCase().split(' ')[0])){ sel.value=o.value;break; }}
+    }
+
+    // Show chips
+    const chips = [];
+    if(info.name) chips.push('📦 '+info.name);
+    if(info.price) chips.push('💰 '+info.price);
+    if(info.audience) chips.push('👥 '+info.audience);
+    if(info.niche) chips.push('🎯 '+info.niche);
+    if(info.confidence) chips.push('✓ Confidence: '+info.confidence+'/10');
+
+    document.getElementById('productChips').innerHTML = chips.map(c=>`<span class="pi-chip">${c}</span>`).join('');
+    document.getElementById('productPanel').classList.add('show');
+    checkGoBtn();
+  } catch(e){
+    console.error(e);
+    document.getElementById('productPanel').innerHTML='<div style="color:var(--neon2);font-size:12px;">⚠ Nu am putut citi URL-ul automat — completează manual câmpurile de mai jos.</div>';
+    document.getElementById('productPanel').classList.add('show');
+  }
+  btn.disabled=false; btn.textContent='⚡ Analizează URL';
+}
 
 // ─── FRAME EXTRACTION ───
-async function extractFrames(videoFile, numFrames=4){
-  return new Promise((resolve)=>{
-    const video = document.getElementById('hiddenVideo');
-    const canvas = document.getElementById('hiddenCanvas');
-    const ctx = canvas.getContext('2d');
-    const url = URL.createObjectURL(videoFile);
-    video.src = url;
-    video.load();
-
-    video.onloadedmetadata = ()=>{
-      const duration = video.duration;
-      canvas.width = 480;
-      canvas.height = Math.round(480 * (video.videoHeight/video.videoWidth)) || 270;
-      const times = [];
-      // Extract at 5%, 25%, 50%, 75% of video
-      const positions = [0.05, 0.25, 0.50, 0.75];
-      for(let j=0;j<Math.min(numFrames,positions.length);j++){
-        times.push(positions[j]*duration);
+async function extractFrames(file, n=5){
+  return new Promise(res=>{
+    const vid = document.getElementById('hVid');
+    const cvs = document.getElementById('hCvs');
+    const ctx = cvs.getContext('2d');
+    const u = URL.createObjectURL(file);
+    vid.src=u; vid.load();
+    vid.onloadedmetadata=()=>{
+      const dur=vid.duration;
+      cvs.width=480;
+      cvs.height=Math.round(480*(vid.videoHeight/Math.max(vid.videoWidth,1)))||270;
+      const pcts=[0.04,0.20,0.45,0.70,0.88];
+      const times=pcts.slice(0,n).map(p=>p*dur);
+      const frames=[]; let i=0;
+      function next(){
+        if(i>=times.length){URL.revokeObjectURL(u);res(frames);return;}
+        vid.currentTime=times[i];
       }
-
-      const frames=[];
-      let idx=0;
-      function seekNext(){
-        if(idx>=times.length){
-          URL.revokeObjectURL(url);
-          resolve(frames);
-          return;
-        }
-        video.currentTime=times[idx];
-      }
-      video.onseeked=()=>{
-        try{
-          ctx.drawImage(video,0,0,canvas.width,canvas.height);
-          const b64=canvas.toDataURL('image/jpeg',0.75).split(',')[1];
-          frames.push(b64);
-        }catch(e){}
-        idx++;
-        seekNext();
+      vid.onseeked=()=>{
+        try{ctx.drawImage(vid,0,0,cvs.width,cvs.height);
+          frames.push(cvs.toDataURL('image/jpeg',.72).split(',')[1]);}catch(e){}
+        i++;next();
       };
-      video.onerror=()=>{resolve(frames);};
-      seekNext();
+      vid.onerror=()=>{URL.revokeObjectURL(u);res(frames);};
+      next();
     };
-    video.onerror=()=>{URL.revokeObjectURL(url);resolve([]);};
+    vid.onerror=()=>{URL.revokeObjectURL(u);res([]);};
   });
 }
 
-// ─── ANALYSIS ───
-async function startAnalysis(){
-  if(videos.length===0){alert('Adaugă cel puțin un clip!');return;}
+// ─── TRACK STEPS ───
+function setTrack(n){
+  for(let i=1;i<=4;i++){
+    const el=document.getElementById('t'+i);
+    el.classList.remove('active','done');
+    if(i<n)el.classList.add('done');
+    else if(i===n)el.classList.add('active');
+  }
+}
 
-  const niche = document.getElementById('ctxNiche').value || 'Nespecificat';
-  const price = document.getElementById('ctxPrice').value || 'Nespecificat';
-  const audience = document.getElementById('ctxAudience').value || 'Nespecificat';
-  const objective = document.getElementById('ctxObjective').value;
-  const product = document.getElementById('ctxProduct').value || 'Nespecificat';
-  const budget = document.getElementById('ctxBudget').value || 'Nespecificat';
+// ─── LOG ───
+let logDelay=0;
+function addLog(msg,d=0){
+  logDelay+=d;
+  setTimeout(()=>{
+    const w=document.getElementById('logWrap');
+    const l=document.createElement('div');
+    l.className='log-l';l.innerHTML=`<span class="arr">›</span>${msg}`;
+    w.appendChild(l);w.scrollTop=w.scrollHeight;
+  },logDelay);
+}
+function setBar(pct){document.getElementById('progBar').style.width=pct+'%';}
+function setSub(t){document.getElementById('loadSub').textContent=t;}
 
-  // Switch to loading
-  document.getElementById('uploadView').style.display='none';
-  document.getElementById('loadingView').classList.add('on');
-  setStep(3);
+// ─── MAIN ANALYSIS ───
+async function runAnalysis(){
+  const name=document.getElementById('pName').value.trim();
+  const price=document.getElementById('pPrice').value.trim();
+  const desc=document.getElementById('pDesc').value.trim();
+  const audience=document.getElementById('pAudience').value.trim();
+  const niche=document.getElementById('pNiche').value;
+  const usp=document.getElementById('pUSP').value.trim();
+  const objective=document.getElementById('pObjective').value;
+  const budget=document.getElementById('pBudget').value.trim();
+  const reviews=document.getElementById('pReviews').value.trim();
+  const url=document.getElementById('productUrl').value.trim();
 
-  const logEl = document.getElementById('loadLog');
-  const barEl = document.getElementById('loadBar');
-  let logIdx=0;
+  if(!desc && !name && vids.length===0){alert('Adaugă cel puțin descrierea produsului sau un clip!');return;}
 
-  function addLog(msg,delay=0){
-    setTimeout(()=>{
-      const line=document.createElement('div');
-      line.className='log-line';
-      line.style.animationDelay=`0s`;
-      line.textContent=msg;
-      logEl.appendChild(line);
-      logEl.scrollTop=logEl.scrollHeight;
-    },delay);
+  // UI switch
+  document.getElementById('formView').style.display='none';
+  document.getElementById('loadView').classList.add('on');
+  setTrack(3);
+  logDelay=0;
+
+  addLog('Motor de analiză inițializat...',0);
+  setBar(5);setSub('Extrag frame-uri din clipuri...');
+
+  // Extract frames
+  const vidData=[];
+  for(let i=0;i<vids.length;i++){
+    addLog(`Procesez vizual: "${vids[i].name.substring(0,35)}"...`,350);
+    setBar(5+(i+1)*(25/Math.max(vids.length,1)));
+    const frames=await extractFrames(vids[i].file,5);
+    vids[i].frames=frames;
+    vidData.push({name:vids[i].name,frames,transcript:vids[i].transcript||''});
   }
 
-  function setBar(pct){barEl.style.width=pct+'%';}
+  addLog('Frame-uri extrase — trimit la Claude AI...',200);
+  setBar(32);setSub('AI analizează vizual + audio + captions...');
+  addLog('Analizez hook-urile (primele 3 secunde)...',400);
+  addLog('Evaluez voiceover și captions...',700);
+  addLog('Calculez CPA prediction per clip...',1000);
+  addLog('Detectez publicul țintă & beneficii din conținut...',1300);
+  addLog('Generez copy premium pentru Meta Ads...',1700);
 
-  addLog('Inițializare motor de analiză vizuală...',0);
-  setBar(5);
-  addLog('Extrag frame-uri din clipuri...',400);
-  setBar(15);
+  // Build Claude message
+  const parts=[];
 
-  // Extract frames from all videos
-  const videoData = [];
-  for(let i=0;i<videos.length;i++){
-    addLog(`Procesez "${videos[i].name.substring(0,30)}"...`, 600+i*200);
-    setBar(15 + (i+1)*(30/videos.length));
-    const frames = await extractFrames(videos[i].file, 4);
-    videoData.push({name:videos[i].name, frames});
-    videos[i].frames=frames;
-  }
+  parts.push({type:'text',text:`Ești un expert top-tier în Meta Ads eCommerce cu experiență directă în campanii de 7-8 figuri. Ai analizat milioane de video creatives și știi exact ce face un clip să aibă CPA minim.
 
-  setBar(50);
-  addLog(`${videoData.length} clipuri procesate — trimit la AI...`,0);
-  addLog('Analizez hook-uri (primele 3 secunde)...',300);
-  addLog('Calculez CPA prediction per clip...',700);
-  addLog('Evaluez pattern-uri de conversie...',1100);
+═══════════════════════════════════════
+DATELE PRODUSULUI
+═══════════════════════════════════════
+URL: ${url||'Nedisponibil'}
+Nume Produs: ${name||'Nespecificat'}
+Preț: ${price||'Nespecificat'}
+Descriere: ${desc||'Nespecificată'}
+Public Țintă (indicat): ${audience||'De detectat din clipuri'}
+Nișă: ${niche||'Nespecificată'}
+USP: ${usp||'Nespecificat'}
+Obiectiv Campanie: ${objective}
+Buget Zilnic: ${budget||'Nespecificat'}
+Recenzii/Social Proof: ${reviews||'Nespecificat'}
 
-  // Build messages for Claude
-  // Send frames as images
-  const contentParts = [];
+Număr clipuri de analizat: ${vidData.length}
 
-  contentParts.push({
-    type:'text',
-    text:`Ești un expert senior în Meta Ads cu experiență analizând milioane de video creatives și datele lor de performanță (CTR, CPC, CPA, ROAS). Ai acces la frame-uri din ${videoData.length} clipuri de marketing.
+═══════════════════════════════════════
+FRAMEWORK ANALIZĂ CLIPURI (bazat pe 50M+ reclame)
+═══════════════════════════════════════
+Pentru fiecare clip, analizezi:
 
-CONTEXT CAMPANIE:
-- Nișă: ${niche}
-- Produs: ${product}
-- Preț: ${price}
-- Public Țintă: ${audience}
-- Obiectiv: ${objective}
-- Buget zilnic: ${budget}
+1. VIZUAL (din frame-uri):
+   - Hook vizual primele 3-5 sec: pattern interrupt, față, mișcare, text overlay
+   - Flow narativ: logică vizuală, demonstrație produs, before/after
+   - Calitate producție vs UGC feel (care convertește mai bine pentru nișa dată)
+   - CTA vizibil, text overlays, brand clarity
 
-Vei primi frame-uri din fiecare clip (câte 4 frame-uri per clip, în ordine cronologică). Analizează VIZUAL fiecare clip și evaluează potențialul de CPA scăzut pe Meta Ads.
+2. AUDIO & VOICEOVER (din transcriptul furnizat):
+   - Puterea hook-ului verbal (primele 5 cuvinte)
+   - Problem-agitate-solve pattern în script
+   - Emotional triggers activate: FOMO, curiozitate, dorință, empatie
+   - CTA verbal clar și convingător
+   - Ritmul și pacing-ul narativ
 
-FRAMEWORK DE ANALIZĂ (bazat pe datele a 50M+ reclame):
-1. HOOK POWER (primele 3 sec / primul frame): Pattern interrupt, mișcare, față umană, text overlay, curiozitate
-2. RETENTION FLOW: Cum evoluează clipul, menține atenția, storytelling vizual
-3. PRODUCT SHOWCASE: Claritatea produsului, demonstrație, beneficii vizibile
-4. SOCIAL PROOF SIGNALS: Testimonial, before/after, UGC feel vs polished
-5. CTA CLARITY: Există un call-to-action clar vizibil?
-6. EMOTIONAL TRIGGER: Ce emoție activează (dorință, FOMO, problemă-soluție, aspirație)?
-7. PLATFORM FIT: Se potrivește pentru Meta Feed/Reels? Aspect ratio, pacing, style?
+3. CAPTIONS & TEXT OVERLAYS (din transcript):
+   - Reinforcement vizual al mesajului audio
+   - Beneficii highlight cu text
+   - Pattern interrupt prin text
+   - Lizibilitate și contrast
 
-Returnează STRICT JSON valid (fără markdown, fără backtick-uri):
-`
-  });
+4. AUDIENCE SIGNAL: Ce public țintă se dezvăluie din conținut
+5. PLATFORM FIT: Format, aspect ratio, pacing pentru Meta Feed/Reels
+6. CPA PREDICTION: Pe baza tuturor factorilor de mai sus
 
-  // Add frames for each video
-  for(let i=0;i<videoData.length;i++){
-    const vd=videoData[i];
-    contentParts.push({type:'text',text:`\n=== CLIP ${i+1}: "${vd.name}" ===`});
+Returnează STRICT JSON valid (fără markdown, fără backtick-uri, fără text în afara JSON):
+`});
+
+  // Add video frames
+  for(let i=0;i<vidData.length;i++){
+    const vd=vidData[i];
+    parts.push({type:'text',text:`\n══ CLIP ${i+1}: "${vd.name}" ══`});
+
+    if(vd.transcript){
+      parts.push({type:'text',text:`🎙 VOICEOVER + CAPTIONS + TEXT din clip:\n"${vd.transcript}"\n`});
+    } else {
+      parts.push({type:'text',text:`🎙 VOICEOVER/CAPTIONS: Nu au fost furnizate — analizează doar vizual.\n`});
+    }
+
     if(vd.frames.length>0){
-      contentParts.push({type:'text',text:`Frame-uri (${vd.frames.length} frame-uri extrase):`});
+      const labels=['Hook/Intro (0-5s)','Act 1 (20%)','Act 2 (45%)','Act 3 (70%)','Final/CTA (88%)'];
+      parts.push({type:'text',text:`📸 FRAME-URI VIZUALE (${vd.frames.length} frame-uri):`});
       for(let f=0;f<vd.frames.length;f++){
-        const positions=['Intro/Hook (0-5s)','Mijloc A (25%)','Mijloc B (50%)','Final/CTA (75%)'];
-        contentParts.push({type:'text',text:`Frame ${f+1} — ${positions[f]||''}:`});
-        contentParts.push({
-          type:'image',
-          source:{type:'base64',media_type:'image/jpeg',data:vd.frames[f]}
-        });
+        parts.push({type:'text',text:`Frame ${f+1} — ${labels[f]||''}:`});
+        parts.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:vd.frames[f]}});
       }
     } else {
-      contentParts.push({type:'text',text:`(Frame-urile nu au putut fi extrase — bazează analiza pe numele fișierului și context)`});
+      parts.push({type:'text',text:`📸 Frame-urile nu au putut fi extrase. Bazează analiza pe voiceover/captions și context.`});
     }
   }
 
-  contentParts.push({
-    type:'text',
-    text:`
+  parts.push({type:'text',text:`
 
-Acum returnează analiza completa in format JSON:
+═══════════════════════════════════════
+OUTPUT AȘTEPTAT — JSON COMPLET
+═══════════════════════════════════════
 {
-  "summary": "<2-3 propoziții despre setul de clipuri în general>",
+  "productBrief": {
+    "detectedName": "<numele produsului detectat/confirmat>",
+    "detectedPrice": "<prețul>",
+    "detectedAudience": "<publicul țintă PRECIS detectat din conținut + date produs — vârstă, gen, interese, pain points>",
+    "detectedBenefits": ["<beneficiu 1>","<beneficiu 2>","<beneficiu 3>","<beneficiu 4>","<beneficiu 5>"],
+    "emotionalTriggers": ["<trigger 1>","<trigger 2>","<trigger 3>"],
+    "competitiveAngle": "<ce avantaj competitiv real are produsul>",
+    "conversionPotential": <1-100>,
+    "marketAlert": "<cel mai important insight despre produs și piață>",
+    "alertType": "success|warn|info"
+  },
   "videos": [
     {
-      "rank": <1=winner>,
-      "name": "<numele clipului>",
-      "cpaScore": <1-100, 100=CPA cel mai mic estimat>,
-      "cpaEstimate": "<estimare CPA ex: 8-15 EUR dacă budget=50EUR/zi>",
-      "verdict": "<1 propoziție: de ce este pe locul acesta>",
+      "rank": <1=winner, sortat după CPA score desc>,
+      "name": "<numele exact al clipului>",
+      "cpaScore": <1-100>,
+      "cpaEstimate": "<estimare CPA în moneda bugetului ex: 8-18 EUR>",
+      "winnerVerdict": "<de ce este pe acest loc — 1-2 propoziții concrete>",
       "hookScore": <1-10>,
+      "audioScore": <1-10>,
+      "captionsScore": <1-10>,
       "retentionScore": <1-10>,
       "conversionScore": <1-10>,
-      "platformFitScore": <1-10>,
-      "strengths": ["<punct forte 1>","<punct forte 2>","<punct forte 3>"],
-      "weaknesses": ["<slăbiciune 1>","<slăbiciune 2>"],
-      "hookAnalysis": "<ce face hook-ul, ce emoție activează>",
-      "improvementTip": "<cel mai important lucru de schimbat pentru CPA mai mic>"
+      "platformScore": <1-10>,
+      "hookAnalysis": "<ce face hook-ul vizual și verbal — specific>",
+      "audioAnalysis": "<analiza voiceover-ului și scriptului — ce funcționează, ce nu>",
+      "captionsAnalysis": "<analiza textelor din clip — eficiență, claritate>",
+      "strengths": ["<punct forte specific 1>","<punct forte specific 2>","<punct forte specific 3>"],
+      "weaknesses": ["<slăbiciune concretă 1>","<slăbiciune concretă 2>"],
+      "quickFix": "<cel mai important lucru de schimbat pentru CPA cu 30%+ mai mic>",
+      "bestForFormat": "<pentru ce format Meta e ideal: Feed/Reels/Stories>"
     }
   ],
-  "winnerRationale": "<de ce winnerul va aduce CPA cel mai mic — explică tehnic>",
-  "testingStrategy": "<cum să testezi aceste clipuri în primele 3-7 zile: buget split, structură campanie>",
-  "quickWins": ["<acțiune imediată 1>","<acțiune imediată 2>","<acțiune imediată 3>"],
-  "budgetAllocation": "<cum să distribui bugetul între clipuri la start>"
-}`
-  });
+  "copy": {
+    "primaryTexts": [
+      {
+        "variant": "Varianta 1 — Problem Hook",
+        "approach": "<ce strategie psihologică folosește>",
+        "text": "<primary text complet 120-200 cuvinte cu emoji, bullet points beneficii cheie, social proof, CTA puternic — în română>",
+        "whyItWorks": "<de ce această variantă convertește>",
+        "bestPairedWith": "<cu ce tip de clip se potrivește cel mai bine>"
+      },
+      {
+        "variant": "Varianta 2 — Testimonial Social Proof",
+        "approach": "<strategie>",
+        "text": "<primary text complet, format testimonial/review, în română>",
+        "whyItWorks": "<explicație>",
+        "bestPairedWith": "<tip clip>"
+      },
+      {
+        "variant": "Varianta 3 — Benefit-Led Curiosity",
+        "approach": "<strategie>",
+        "text": "<primary text complet, deschide cu beneficiul #1, curiozitate, în română>",
+        "whyItWorks": "<explicație>",
+        "bestPairedWith": "<tip clip>"
+      },
+      {
+        "variant": "Varianta 4 — Urgency + Scarcity",
+        "approach": "<strategie>",
+        "text": "<primary text complet cu urgency și scarcity reală, în română>",
+        "whyItWorks": "<explicație>",
+        "bestPairedWith": "<tip clip>"
+      },
+      {
+        "variant": "Varianta 5 — Story Narrative",
+        "approach": "<strategie>",
+        "text": "<primary text complet ca o mini-poveste/journey, în română>",
+        "whyItWorks": "<explicație>",
+        "bestPairedWith": "<tip clip>"
+      }
+    ],
+    "headlines": [
+      {"text":"<headline max 40 caractere>","score":<1-10>,"type":"<tipul>"},
+      {"text":"<headline>","score":<1-10>,"type":"<tipul>"},
+      {"text":"<headline>","score":<1-10>,"type":"<tipul>"},
+      {"text":"<headline>","score":<1-10>,"type":"<tipul>"},
+      {"text":"<headline>","score":<1-10>,"type":"<tipul>"},
+      {"text":"<headline>","score":<1-10>,"type":"<tipul>"}
+    ],
+    "descriptions": [
+      {"text":"<description 20-30 cuvinte>","type":"<tipul>"},
+      {"text":"<description>","type":"<tipul>"},
+      {"text":"<description>","type":"<tipul>"},
+      {"text":"<description>","type":"<tipul>"}
+    ],
+    "videoHooks": [
+      {"text":"<primele 3-5 sec ale clipului — ce spui/arăți>","score":<1-10>,"type":"Pattern Interrupt","audioHook":"<exact primele cuvinte rostite>"},
+      {"text":"<hook>","score":<1-10>,"type":"Problem Agitate","audioHook":"<cuvinte>"},
+      {"text":"<hook>","score":<1-10>,"type":"Curiosity Gap","audioHook":"<cuvinte>"},
+      {"text":"<hook>","score":<1-10>,"type":"Result-First","audioHook":"<cuvinte>"},
+      {"text":"<hook>","score":<1-10>,"type":"Social Proof","audioHook":"<cuvinte>"},
+      {"text":"<hook>","score":<1-10>,"type":"Contrarian","audioHook":"<cuvinte>"}
+    ]
+  },
+  "strategy": {
+    "winnerRationale": "<de ce winnerul câștigă — analiza completă vizual+audio+captions>",
+    "targetingRecommendation": "<targeting Meta precis: interese, comportamente, lookalike surse, excluderi>",
+    "budgetStrategy": "<structura campaniei: CBO vs ABO, buget split între clipuri, faza de test vs scale>",
+    "creativeRotation": "<cum să rotești clipurile: care cu care, când să scoți un clip, când să scalezi>",
+    "abTestingPlan": "<primele 7 zile: ce testezi, cum măsori, când iei decizii>",
+    "scalingRoadmap": "<de la test la 7 figuri: milestone-uri, metrici de decizie, când duci bugetul sus>",
+    "quickWins": ["<acțiune imediată 1 cu impact mare>","<acțiune imediată 2>","<acțiune imediată 3>","<acțiune imediată 4>"]
+  }
+}`});
 
   try{
-    const response = await fetch('https://api.anthropic.com/v1/messages',{
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:4000,
-        messages:[{role:'user',content:contentParts}]
+        max_tokens:6000,
+        messages:[{role:'user',content:parts}]
       })
     });
-
-    setBar(85);
-    addLog('Generez ranking final...',0);
-    const data = await response.json();
-    const rawText = data.content.map(i=>i.text||'').join('');
-    const clean = rawText.replace(/```json|```/g,'').trim();
-    const result = JSON.parse(clean);
-
+    setBar(88);addLog('Procesez răspunsul AI...',0);
+    const data=await resp.json();
+    const raw=data.content.map(c=>c.text||'').join('');
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const result=JSON.parse(clean);
     setBar(100);
-    addLog('✓ Analiză completă!',300);
-
-    setTimeout(()=>{renderResults(result);},800);
-  }catch(err){
+    addLog('✓ Analiză completă! Generez raportul...',200);
+    setTimeout(()=>renderAll(result),900);
+  } catch(err){
     console.error(err);
-    document.getElementById('loadingView').classList.remove('on');
-    document.getElementById('uploadView').style.display='block';
-    setStep(1);
-    alert('Eroare la analiză. Încearcă din nou sau adaugă context mai detaliat.');
+    document.getElementById('loadView').classList.remove('on');
+    document.getElementById('formView').style.display='block';
+    setTrack(1);
+    alert('Eroare la analiză. Asigură-te că ai completat descrierea produsului și încearcă din nou.');
   }
 }
 
-function renderResults(r){
-  document.getElementById('loadingView').classList.remove('on');
-  setStep(4);
+// ─── RENDER ───
+function renderAll(r){
+  document.getElementById('loadView').classList.remove('on');
+  setTrack(4);
 
-  // Sort by rank
-  const sorted = [...r.videos].sort((a,b)=>a.rank-b.rank);
+  // Product Brief
+  const pb = r.productBrief;
+  const bg = document.getElementById('briefGrid');
+  bg.innerHTML = [
+    {label:'Produs Detectat',val:pb.detectedName,hl:true},
+    {label:'Preț',val:pb.detectedPrice,hl:false},
+    {label:'Public Țintă',val:pb.detectedAudience,hl:false},
+    {label:'Avantaj Competitiv',val:pb.competitiveAngle,hl:false},
+    {label:'Potențial Conversie',val:pb.conversionPotential+'/100',hl:true},
+    {label:'Trigger Emoțional #1',val:(pb.emotionalTriggers||[])[0]||'—',hl:false},
+  ].map(b=>`<div class="brief-card"><div class="brief-card-label">${b.label}</div>
+    <div class="brief-card-val ${b.hl?'hl':''}">${b.val||'—'}</div></div>`).join('');
 
-  // Podium
-  const podium = document.getElementById('podiumCards');
-  podium.innerHTML = sorted.map((v,i)=>{
-    const cls = i===0?'winner-1':i===1?'winner-2':'';
-    const rankLabel = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-    const vidIdx = videos.findIndex(x=>x.name===v.name);
-    const thumbHtml = (vidIdx>=0 && videos[vidIdx].objectUrl)
-      ? `<video src="${videos[vidIdx].objectUrl}" muted loop autoplay playsinline style="width:90px;height:100%;object-fit:cover;display:block;"></video>`
-      : `<span style="font-size:28px;">🎬</span>`;
+  if(pb.detectedBenefits?.length){
+    bg.innerHTML+=`<div class="brief-card" style="grid-column:1/-1;">
+      <div class="brief-card-label">Beneficii Detectate</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+        ${pb.detectedBenefits.map(b=>`<span class="pi-chip">${b}</span>`).join('')}
+      </div></div>`;
+  }
 
-    return `
-    <div class="result-card ${cls}">
-      <div class="rc-inner">
-        <div class="rc-rank">${rankLabel}</div>
-        <div class="rc-thumb">${thumbHtml}</div>
-        <div class="rc-body">
-          <div class="rc-name">${v.name}</div>
-          <div class="rc-verdict">${v.verdict}</div>
-          <div class="rc-scores">
-            <span class="sc-pill hook">🎣 Hook ${v.hookScore}/10</span>
-            <span class="sc-pill conv">💰 Conv. ${v.conversionScore}/10</span>
-            <span class="sc-pill reten">⏱ Retention ${v.retentionScore}/10</span>
-            <span class="sc-pill cpa">📱 Platform ${v.platformFitScore}/10</span>
-          </div>
-          <div class="rc-strengths">
-            ${(v.strengths||[]).map(s=>`<div class="strength-item">${s}</div>`).join('')}
-          </div>
+  const ba=document.getElementById('briefAlert');
+  if(pb.marketAlert){
+    ba.innerHTML=`<div class="alert ${pb.alertType||'info'}">
+      ${pb.alertType==='success'?'✅':pb.alertType==='warn'?'⚠️':'💡'}
+      <span>${pb.marketAlert}</span></div>`;
+  }
+
+  // Video Rankings
+  const sorted=[...r.videos].sort((a,b)=>a.rank-b.rank);
+  const rc=document.getElementById('rankCards');
+  rc.innerHTML=sorted.map((v,i)=>{
+    const cls=i===0?'top':i===1?'two':i===2?'thr':'';
+    const badge=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    const vi=vids.findIndex(x=>x.name===v.name);
+    const hasAudio=v.audioScore>0&&vids[vi]?.transcript;
+
+    return `<div class="vrank ${cls}">
+      <div class="vr-row">
+        <div class="vr-badge">${badge}</div>
+        <div class="vr-preview">
+          ${vi>=0&&vids[vi].url?`<video src="${vids[vi].url}" muted loop autoplay playsinline></video>`:`<div class="no-vid">🎬</div>`}
         </div>
-        <div class="rc-right">
-          <div class="cpa-score">${v.cpaScore}</div>
-          <div class="cpa-label">CPA Score</div>
-          <div class="cpa-est">${v.cpaEstimate}</div>
+        <div class="vr-body">
+          <div class="vr-name">${v.name}</div>
+          <div class="vr-verdict">${v.winnerVerdict}</div>
+          <div class="vr-pills">
+            <span class="vr-pill g">🎣 Hook ${v.hookScore}/10</span>
+            <span class="vr-pill b">🎙 Audio ${v.audioScore}/10</span>
+            <span class="vr-pill p">📝 Captions ${v.captionsScore}/10</span>
+            <span class="vr-pill o">⏱ Retention ${v.retentionScore}/10</span>
+            <span class="vr-pill r">💰 Conv. ${v.conversionScore}/10</span>
+          </div>
+          <div class="vr-strengths">
+            ${(v.strengths||[]).map(s=>`<div class="vr-str">${s}</div>`).join('')}
+            ${(v.weaknesses||[]).map(w=>`<div class="vr-weak">${w}</div>`).join('')}
+          </div>
+          ${v.quickFix?`<div class="alert info" style="margin-top:10px;font-size:11px;padding:8px 12px;">⚡ Quick Fix: ${v.quickFix}</div>`:''}
+        </div>
+        <div class="vr-right">
+          <div class="vr-score">${v.cpaScore}</div>
+          <div class="vr-score-lbl">CPA Score</div>
+          <div class="vr-cpa">${v.cpaEstimate||''}</div>
+          ${hasAudio?`<div class="vr-audio-badge">🎙 Audio Analizat</div>`:''}
+          <div style="font-size:9px;color:var(--dim);margin-top:6px;">${v.bestForFormat||''}</div>
         </div>
       </div>
     </div>`;
   }).join('');
 
-  // Breakdown details
-  const bg = document.getElementById('breakdownGrid');
-  bg.innerHTML = sorted.slice(0,3).map((v,i)=>`
-    <div class="bk-card">
-      <div class="bk-title"><div class="dot"></div>${i===0?'🏆 WINNER':'Clip #'+(i+1)} — ${v.name.substring(0,24)}</div>
-      <div class="bk-item"><span class="bk-key">Hook Analysis</span><span class="bk-val ${v.hookScore>=7?'good':v.hookScore>=5?'ok':'bad'}">${v.hookAnalysis?.substring(0,40)||'—'}...</span></div>
-      <div class="bk-item"><span class="bk-key">CPA Estimat</span><span class="bk-val good">${v.cpaEstimate}</span></div>
-      <div class="bk-item"><span class="bk-key">Platform Fit</span><span class="bk-val ${v.platformFitScore>=7?'good':v.platformFitScore>=5?'ok':'bad'}">${v.platformFitScore}/10</span></div>
-      <div class="bk-item"><span class="bk-key">Quick Fix</span><span class="bk-val ok">${(v.improvementTip||'').substring(0,40)}...</span></div>
-    </div>
-  `).join('');
+  // Copy — Primary Texts
+  const cp=r.copy;
+  document.getElementById('cp-pt').innerHTML=(cp.primaryTexts||[]).map((t,i)=>`
+    <div class="cblock">
+      <div class="cblock-tag">
+        ${t.variant}
+        <span class="badge">${t.approach||''}</span>
+        <span class="badge" style="background:rgba(57,255,159,.08);border-color:rgba(57,255,159,.2);color:var(--neon);">Pair: ${t.bestPairedWith||'Any'}</span>
+      </div>
+      <div class="cblock-text" id="pt${i}">${t.text||''}</div>
+      ${t.whyItWorks?`<div style="margin-top:10px;font-size:11px;color:var(--dim);font-family:'Fira Code',monospace;">💡 ${t.whyItWorks}</div>`:''}
+      <button class="cpbtn" onclick="cp2('pt${i}',this)">Copiază</button>
+    </div>`).join('');
 
-  // Reco box
-  const rb = document.getElementById('recoBox');
-  rb.innerHTML = `
-    <div class="reco-title">🎯 STRATEGIA DE <span>LANSARE</span></div>
-    <div style="font-size:13px;color:var(--muted);margin-top:4px;">Recomandarea AI bazată pe analiza clipurilor tale</div>
-    <div class="reco-text">${r.winnerRationale}</div>
-    <div class="reco-text" style="margin-top:12px;"><strong style="color:var(--text);">Testing Strategy:</strong> ${r.testingStrategy}</div>
-    <div class="reco-text" style="margin-top:12px;"><strong style="color:var(--text);">Alocare buget:</strong> ${r.budgetAllocation}</div>
-    <div class="reco-actions">
-      ${(r.quickWins||[]).map(qw=>`<div class="reco-action">⚡ ${qw}</div>`).join('')}
-    </div>
-  `;
+  // Headlines
+  document.getElementById('cp-hl').innerHTML=(cp.headlines||[]).map((h,i)=>`
+    <div class="cblock" style="padding:16px 20px;">
+      <div class="cblock-tag">${h.type||'Headline '+(i+1)} <span class="score-badge">Score: ${h.score}/10</span></div>
+      <div class="cblock-hl" id="hl${i}">${h.text||''}</div>
+      <button class="cpbtn" onclick="cp2('hl${i}',this)">Copiază</button>
+    </div>`).join('');
 
-  const rv = document.getElementById('resultsView');
-  rv.style.display='block';
-  rv.classList.add('on');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+  // Descriptions
+  document.getElementById('cp-desc').innerHTML=(cp.descriptions||[]).map((d,i)=>`
+    <div class="cblock">
+      <div class="cblock-tag">${d.type||'Description '+(i+1)}</div>
+      <div class="cblock-text" id="dc${i}">${d.text||''}</div>
+      <button class="cpbtn" onclick="cp2('dc${i}',this)">Copiază</button>
+    </div>`).join('');
 
-function setStep(n){
-  for(let i=1;i<=4;i++){
-    const el=document.getElementById('step'+i);
-    el.classList.remove('active','done');
-    if(i<n) el.classList.add('done');
-    else if(i===n) el.classList.add('active');
+  // Hooks
+  document.getElementById('cp-hooks').innerHTML=`
+    <div class="alert info">💡 <span>Hook-ul = primele 3 secunde. Este factorul #1 care determină dacă clipul se oprește în feed sau este scrollat. Testează toate variantele.</span></div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px;">
+    ${(cp.videoHooks||[]).map((h,i)=>`
+      <div class="hook-item">
+        <div class="hook-body">
+          <div class="hook-type">${h.type||''}</div>
+          <div class="hook-text" id="hk${i}">${h.text||''}</div>
+          ${h.audioHook?`<div style="margin-top:6px;font-family:'Fira Code',monospace;font-size:11px;color:var(--lav);">🎙 Primele cuvinte: "${h.audioHook}"</div>`:''}
+        </div>
+        <div class="hook-right">
+          <div class="hook-score">${h.score}/10</div>
+          <div class="hook-score-lbl">Impact</div>
+          <button class="cpbtn" style="position:static;margin-top:4px;" onclick="cp2('hk${i}',this)">Copiază</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+
+  // Strategy
+  const st=r.strategy;
+  document.getElementById('stratGrid').innerHTML=[
+    {icon:'🏆',title:'De ce câștigă Winnerul',text:st.winnerRationale},
+    {icon:'🎯',title:'Targeting Recomandat',text:st.targetingRecommendation},
+    {icon:'💰',title:'Budget & Structura Campanie',text:st.budgetStrategy},
+    {icon:'🔄',title:'Rotație Creative',text:st.creativeRotation},
+    {icon:'🔬',title:'Plan A/B Testing (7 zile)',text:st.abTestingPlan},
+    {icon:'📈',title:'Scaling Roadmap 7 Figuri',text:st.scalingRoadmap},
+  ].map(s=>`<div class="ins-card">
+    <div class="ins-icon">${s.icon}</div>
+    <div class="ins-title">${s.title}</div>
+    <div class="ins-text">${s.text||'—'}</div>
+  </div>`).join('');
+
+  if(st.quickWins?.length){
+    document.getElementById('stratGrid').innerHTML+=`
+      <div class="ins-card" style="grid-column:1/-1;background:rgba(57,255,159,.03);border-color:rgba(57,255,159,.15);">
+        <div class="ins-icon">⚡</div>
+        <div class="ins-title" style="color:var(--neon);">Quick Wins — Acționează Acum</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+          ${st.quickWins.map(q=>`<div class="vr-str">${q}</div>`).join('')}
+        </div>
+      </div>`;
   }
-}
 
-function resetApp(){
-  videos=[];
-  document.getElementById('videoGrid').innerHTML='';
-  document.getElementById('fileInput').value='';
-  document.getElementById('resultsView').classList.remove('on');
-  document.getElementById('resultsView').style.display='none';
-  document.getElementById('loadingView').classList.remove('on');
-  document.getElementById('uploadView').style.display='block';
-  document.getElementById('podiumCards').innerHTML='';
-  document.getElementById('breakdownGrid').innerHTML='';
-  document.getElementById('loadLog').innerHTML='';
-  document.getElementById('loadBar').style.width='0%';
-  document.getElementById('analyzeBtn').disabled=true;
-  setStep(1);
+  const rv=document.getElementById('resultView');
+  rv.style.display='block';rv.classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// Init
-document.getElementById('analyzeBtn').disabled=true;
+// ─── COPY TO CLIPBOARD ───
+function cp2(id,btn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  navigator.clipboard.writeText(el.innerText||el.textContent).then(()=>{
+    btn.textContent='✓ Copiat!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Copiază';btn.classList.remove('ok');},2000);
+  });
+}
+
+// ─── TAB SWITCH ───
+function switchTab(id,el){
+  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('cp-'+id).classList.add('on');
+  el.classList.add('on');
+}
+
+// ─── RESET ───
+function resetAll(){
+  vids=[];productData={};
+  document.getElementById('vgrid').innerHTML='';
+  document.getElementById('vidInput').value='';
+  document.getElementById('resultView').classList.remove('on');
+  document.getElementById('resultView').style.display='none';
+  document.getElementById('loadView').classList.remove('on');
+  document.getElementById('formView').style.display='block';
+  document.getElementById('productPanel').classList.remove('show');
+  document.getElementById('logWrap').innerHTML='';
+  document.getElementById('progBar').style.width='0%';
+  document.getElementById('goBtn').disabled=true;
+  ['pName','pPrice','pDesc','pAudience','pUSP','pBudget','pReviews','productUrl'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  setTrack(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// init
+document.getElementById('goBtn').disabled=true;
 </script>
 </body>
 </html>
