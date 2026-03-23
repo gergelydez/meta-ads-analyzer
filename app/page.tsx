@@ -45,7 +45,7 @@ export default function Home() {
       frames: [],
       transcript: '',
       file: f,
-    } as VideoFile & { file: File }))
+    }))
     setVideos(prev => [...prev, ...newVids])
   }, [videos.length])
 
@@ -96,7 +96,7 @@ export default function Home() {
     const videosWithFrames = []
     for (let i = 0; i < videos.length; i++) {
       setProgress(5 + (i + 1) * (25 / Math.max(videos.length, 1)))
-      const vFile = (videos[i] as VideoFile & { file?: File })
+      const vFile = videos[i]
       const file = vFile.file || null
       let frames: string[] = []
       if (file) {
