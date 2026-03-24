@@ -1,11 +1,14 @@
 'use client'
 import { useState, useCallback } from 'react'
-import StepTrack from '@/components/StepTrack'
-import VideoDropzone from '@/components/VideoDropzone'
-import LoadingView from '@/components/LoadingView'
-import ResultsView from '@/components/ResultsView'
+import dynamic from 'next/dynamic'
 import { VideoFile, Step, AnalysisResult } from '@/lib/types'
 import { extractFrames } from '@/lib/extractFrames'
+
+// Dynamic imports to prevent SSR issues
+const StepTrack = dynamic(() => import('@/components/StepTrack'), { ssr: false })
+const VideoDropzone = dynamic(() => import('@/components/VideoDropzone'), { ssr: false })
+const LoadingView = dynamic(() => import('@/components/LoadingView'), { ssr: false })
+const ResultsView = dynamic(() => import('@/components/ResultsView'), { ssr: false })
 
 const NICHES = [
   '', 'Beauty & Skincare', 'Fashion & Îmbrăcăminte', 'Fitness & Sport',
